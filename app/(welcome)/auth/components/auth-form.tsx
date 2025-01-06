@@ -1,57 +1,66 @@
+'use client'
+
 import { CustomButton } from '@/components/ui'
 import { PasswordInput, TextInput, Title } from '@mantine/core'
-import { useAuthStore } from '../stores/use-auth-store'
+import { useAuthStore } from '@/components/stores/use-auth-store'
 import { useForm } from '@mantine/form'
-import { FC } from 'react'
+import { FC, useEffect } from 'react'
 import Link from 'next/link'
+import { useUrlParams } from '@/components/hooks/use-url-param'
 
 export type AuthState = 'login' | 'registration'
 
 export const AuthForm: FC<{ mode: AuthState; switchMode: () => void }> = ({ mode, switchMode }) => {
-    const registration = useAuthStore().registration
-    const auth = useAuthStore().auth
+    const auth = useAuthStore()
+    const { setUrlParam } = useUrlParams()
+
+    useEffect(() => {
+        if (mode === 'registration') {
+            setUrlParam('mode', 'registration')
+        } else {
+            setUrlParam('mode', 'login')
+        }
+    }, [mode, setUrlParam])
+
+    function validateField(value: string, field: string) {
+        if (mode === 'registration') {
+            if (field === 'name' && value.length < 2) return 'Имя не может быть меньше 2 символов'
+            if (field === 'email' && !/^\S+@\S+$/.test(value)) return 'Не валидная почта'
+            if (field === 'login' && value.length < 5) return 'Логин не может быть меньше 5 символов'
+            if (field === 'password' && value.length < 16) return 'Пароль не может быть меньше 16 символов'
+        } else {
+            if (field === 'login' && value.length < 1) return 'Логин не может быть пустой'
+            if (field === 'password' && value.length < 1) return 'Пароль не может быть пустой'
+        }
+        return null
+    }
 
     const form = useForm({
-        mode: 'uncontrolled',
+        mode: 'controlled',
         initialValues: { name: '', email: '', password: '', login: '', confirmPassword: '' },
         validate: {
-            name: (value) =>
-                mode === 'registration' && value.length < 2 ? 'Имя не может быть меньше 2 символов' : null,
-            email: (value) => (mode === 'registration' && !/^\S+@\S+$/.test(value) ? 'Не валидная почта' : null),
-            login: (value) =>
-                mode === 'registration'
-                    ? value.length < 5
-                        ? 'Логин не может быть меньше 5 символов'
-                        : null
-                    : value.length < 1
-                      ? 'Логин не может быть пустой'
-                      : null,
-            password: (value) =>
-                mode === 'registration'
-                    ? value.length < 16
-                        ? 'Пароль не может быть меньше 16 символов'
-                        : null
-                    : value.length < 1
-                      ? 'Пароль не может быть пустой'
-                      : null,
+            name: (value) => validateField(value, 'name'),
+            email: (value) => validateField(value, 'email'),
+            login: (value) => validateField(value, 'login'),
+            password: (value) => validateField(value, 'password'),
             confirmPassword: (value, values) =>
-                mode === 'registration' && value != values.password ? 'Пароли не совпадают' : null,
+                mode === 'registration' && value !== values.password ? 'Пароли не совпадают' : null,
         },
     })
 
     const { name, email, password, login } = form.getValues()
     const submit = () => {
-        const user = {
-            name: name,
-            email: email,
-            password: password,
-            login: login,
-        }
+        const user = { name, email, password, login }
+        form.reset()
+
         if (mode === 'registration') {
-            return registration(user)
+            auth.registration(user, () => {
+                switchMode()
+            })
+            return
         }
 
-        return auth(user)
+        auth.auth(user)
     }
 
     const toggleMode = () => {
