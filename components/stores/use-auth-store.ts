@@ -11,20 +11,13 @@ interface User {
 }
 
 interface IUseAuthStore {
-    user: User
     auth: (user: User) => void
     registration: (user: User, onSuccess: () => void) => void
 }
 
-export const useAuthStore = create<IUseAuthStore>((set) => ({
-    user: {
-        login: '',
-        password: '',
-        email: '',
-        name: '',
-    },
+export const useAuthStore = create<IUseAuthStore>(() => ({
     auth: (user: User) => {
-        AxiosInstance.post('/login', {
+        AxiosInstance.post('/auth/login', {
             login: user.login,
             password: user.password,
         })
@@ -32,7 +25,6 @@ export const useAuthStore = create<IUseAuthStore>((set) => ({
                 Notification('Вы успешно вошли в аккаунт!', 'green')
                 localStorage.setItem('token', res.data.token)
                 useUserStore.getState().setUser(user)
-                set({ user: user })
             })
             .catch((error) => {
                 ErrorNotification()
@@ -40,11 +32,10 @@ export const useAuthStore = create<IUseAuthStore>((set) => ({
             })
     },
     registration: (user: User, onSuccess: () => void) => {
-        AxiosInstance.post('/registration', user)
+        AxiosInstance.post('/auth/registration', user)
             .then(() => {
                 Notification('Вы успешно зарегистрировались!', 'green')
 
-                set({ user: user })
                 if (onSuccess) {
                     onSuccess()
                 }

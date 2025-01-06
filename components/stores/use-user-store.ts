@@ -25,6 +25,6 @@ export const useUserStore = create<IUseUserStore>((set) => ({
     },
     setUser: (user: User) => set({ user: user }),
     getUserData: () => {
-        AxiosInstance.get('/getData').then((res) => set({ user: res.data }))
+        AxiosInstance.get('/user/getData').then((res) => set({ user: res.data }))
     },
 }))
