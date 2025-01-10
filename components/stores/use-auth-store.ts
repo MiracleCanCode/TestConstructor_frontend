@@ -23,6 +23,7 @@ export const useAuthStore = create<IUseAuthStore>(() => ({
         })
             .then((res) => {
                 Notification('Вы успешно вошли в аккаунт!', 'green')
+                location.reload()
                 localStorage.setItem('token', res.data.token)
                 useUserStore.getState().setUser(user)
             })

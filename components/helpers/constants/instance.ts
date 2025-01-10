@@ -2,7 +2,7 @@ import axios from 'axios'
 import { token } from './token'
 
 export const AxiosInstance = axios.create({
-    baseURL: 'http://localhost:4200/api',
+    baseURL: 'http://localhost:4210/api',
 })
 
 AxiosInstance.interceptors.request.use(

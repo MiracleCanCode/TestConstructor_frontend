@@ -25,7 +25,7 @@ export default function RootLayout({
     return (
         <html lang='ru'>
             <body className={font.className}>
-                <MantineProvider defaultColorScheme='dark'>
+                <MantineProvider defaultColorScheme='auto'>
                     <Container fluid pt={20}>
                         <Header />
 

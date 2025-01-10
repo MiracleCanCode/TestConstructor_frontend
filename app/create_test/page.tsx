@@ -1,8 +1,8 @@
-import { CreateTestForm } from '@/components/ui/create-test-form'
+import { CreateTestForm } from '@/app/create_test/components/create-test-form'
 import { FC } from 'react'
 
 const CreateTest: FC = () => (
-    <div>
+    <div className=' mt-8'>
         <CreateTestForm />
     </div>
 )

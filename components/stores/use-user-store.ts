@@ -1,7 +1,8 @@
 import { create } from 'zustand'
 import { AxiosInstance } from '../helpers/constants/instance'
+import { ErrorNotification, Notification } from '../ui'
 
-interface User {
+export interface User {
     login: string
     password: string
     email: string
@@ -13,6 +14,8 @@ interface IUseUserStore {
     user: User
     setUser: (user: User) => void
     getUserData: () => void
+    updateUserData: (user: User, userLogin: string) => void
+    logout: () => void
 }
 
 export const useUserStore = create<IUseUserStore>((set) => ({
@@ -25,6 +28,30 @@ export const useUserStore = create<IUseUserStore>((set) => ({
     },
     setUser: (user: User) => set({ user: user }),
     getUserData: () => {
-        AxiosInstance.get('/user/getData').then((res) => set({ user: res.data }))
+        AxiosInstance.get('/user/getData')
+            .then((res) => set({ user: res.data }))
+            .catch((err) => {
+                console.log(err)
+                localStorage.removeItem('token')
+            })
+    },
+    updateUserData: (user: User, userLogin: string) => {
+        AxiosInstance.post('/user/update', {
+            user_login: userLogin,
+            data: {
+                name: user.name,
+                avatar: user.avatar,
+            },
+        })
+            .then(() => {
+                set({ user: user })
+                Notification('Вы успешно обновили свои данные')
+            })
+            .catch(() => ErrorNotification())
+    },
+    logout: () => {
+        Notification('Вы успешно вышли из аккаунта!', 'green')
+        location.reload()
+        localStorage.removeItem('token')
     },
 }))
