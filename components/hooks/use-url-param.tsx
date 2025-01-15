@@ -8,5 +8,12 @@ export const useUrlParams = () => {
         window.history.pushState({}, '', currentUrl.toString())
     }
 
-    return { setUrlParam }
+    const getUrlParam = (param: string): string | null => {
+        const currentUrl = new URL(window.location.href)
+        const searchParams = currentUrl.searchParams
+
+        return searchParams.get(param)
+    }
+
+    return { setUrlParam, getUrlParam }
 }

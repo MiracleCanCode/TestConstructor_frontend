@@ -1,7 +1,7 @@
 import { FC } from 'react'
 import { Paper, Switch, Text } from '@mantine/core'
 
-export const Variant: FC<{ name: string; index: number; isCorrect: boolean; key?: number }> = ({
+export const VariantEntity: FC<{ name: string; index: number; isCorrect: boolean; key?: number }> = ({
     name,
     index,
     isCorrect,
@@ -16,4 +16,4 @@ export const Variant: FC<{ name: string; index: number; isCorrect: boolean; key?
     )
 }
 
-Variant.displayName = 'VariantEntity'
+VariantEntity.displayName = 'VariantEntity'

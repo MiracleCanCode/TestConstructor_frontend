@@ -5,16 +5,20 @@ import {
     Container,
     Divider,
     Flex,
+    Tooltip,
     useComputedColorScheme,
     useMantineColorScheme,
 } from '@mantine/core'
-import { FC, useEffect, useState } from 'react'
+import { FC, useEffect, useMemo, useState } from 'react'
 import { CustomButton } from '../ui'
 import Link from 'next/link'
 import { usePathname, useParams } from 'next/navigation'
 import { token } from '../helpers/constants/token'
 import { useUserStore } from '../stores/use-user-store'
-import { FaRegSun, FaRegMoon, FaArrowLeft } from 'react-icons/fa'
+import { FaArrowLeft } from 'react-icons/fa'
+import { FiMoon } from 'react-icons/fi'
+import { FiSun } from 'react-icons/fi'
+import { FiPlus } from 'react-icons/fi'
 
 const IsAuthContent: FC = () => {
     const { user } = useUserStore()
@@ -51,6 +55,11 @@ export const Header: FC = () => {
         getInitialValueInEffect: true,
     })
     const { getUserData } = useUserStore()
+    const iconColor = useMemo(() => (computedColorScheme === 'light' ? 'black' : 'white'), [computedColorScheme])
+    const labelForChangeTheme = useMemo(
+        () => (computedColorScheme === 'light' ? 'Сменить тему на темную' : 'Сменить тему на светлую'),
+        [computedColorScheme],
+    )
 
     useEffect(() => {
         if (token) getUserData()
@@ -65,28 +74,35 @@ export const Header: FC = () => {
         <header>
             <Container fluid className='pb-3'>
                 <Flex justify='space-between' align='center'>
-                    {showBackButton ? (
+                    {showBackButton && (
                         <Link href='/dashboard'>
                             <CustomButton variant='subtle'>
                                 <FaArrowLeft className='mr-3' /> На главную
                             </CustomButton>
                         </Link>
-                    ) : (
-                        <div />
                     )}
 
                     {token && pathname !== `/user/${params.login}` && (
                         <Flex justify='flex-end' w='100%' mr='10px'>
-                            <ActionIcon
-                                onClick={() => setColorScheme(computedColorScheme === 'light' ? 'dark' : 'light')}
-                                variant='transparent'
-                                size='xl'
-                            >
-                                {computedColorScheme === 'light' ? <FaRegSun /> : <FaRegMoon />}
-                            </ActionIcon>
+                            <Tooltip label={labelForChangeTheme}>
+                                <ActionIcon
+                                    onClick={() => setColorScheme(computedColorScheme === 'light' ? 'dark' : 'light')}
+                                    variant='transparent'
+                                    color={iconColor}
+                                    size='xl'
+                                >
+                                    {computedColorScheme === 'light' ? <FiSun size='20' /> : <FiMoon size='20' />}
+                                </ActionIcon>
+                            </Tooltip>
                         </Flex>
                     )}
-
+                    {token && pathname !== `/user/${params.login}` && (
+                        <Link href='/create_test' className=' mr-5'>
+                            <Tooltip label='На страницу с созданием теста'>
+                                <FiPlus color={iconColor} size='25' />
+                            </Tooltip>
+                        </Link>
+                    )}
                     {token ? pathname === `/user/${params.login}` ? null : <IsAuthContent /> : <DontAuthContent />}
                 </Flex>
             </Container>

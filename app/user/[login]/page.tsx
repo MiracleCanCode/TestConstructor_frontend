@@ -2,6 +2,7 @@
 import { User, useUserStore } from '@/components/stores/use-user-store'
 import { CustomButton } from '@/components/ui'
 import { Avatar, Flex, TextInput } from '@mantine/core'
+// import { useParams } from 'next/navigation'
 import { FC, useEffect, useState } from 'react'
 
 const UserPage: FC = () => {
@@ -14,6 +15,7 @@ const UserPage: FC = () => {
         password: '',
         avatar: '',
     })
+    // const params = useParams()
 
     useEffect(() => {
         setUpdateData({

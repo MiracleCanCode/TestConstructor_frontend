@@ -1,5 +1,5 @@
 export * from './custom-button'
 export * from './notification'
-export * from '../../app/create_test/components/create-test-form'
+export * from './create-test-form'
 export * from './error-notification'
-export * from '../../app/create_test/components/create-question-form'
+export * from './create-question-form'

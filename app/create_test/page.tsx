@@ -1,4 +1,4 @@
-import { CreateTestForm } from '@/app/create_test/components/create-test-form'
+import { CreateTestForm } from '@/components/ui/create-test-form'
 import { FC } from 'react'
 
 const CreateTest: FC = () => (

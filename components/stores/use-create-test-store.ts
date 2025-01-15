@@ -1,18 +1,21 @@
 import { create } from 'zustand'
 import { AxiosInstance } from '../helpers/constants/instance'
 import { ErrorNotification } from '../ui'
+import { token } from '../helpers/constants/token'
 
-interface Variant {
+export interface Variant {
     name: string
     isCorrect: boolean
 }
 
-interface Question {
+export interface Question {
     name: string
-    variantAnswer: Variant[]
+    description?: string
+    variants: Variant[]
 }
 
-interface Test {
+export interface Test {
+    ID?: number
     name: string
     description?: string
     questions: Question[]
@@ -22,7 +25,6 @@ interface IUseCreateTestStore {
     test: Test
     createTest: (test: Test) => void
     createQuestion: (question: Question) => void
-    addVariantToQuestion: (variant: Variant, questionIndex: number) => void
 }
 
 export const useCreateTestStore = create<IUseCreateTestStore>((set) => ({
@@ -32,31 +34,22 @@ export const useCreateTestStore = create<IUseCreateTestStore>((set) => ({
     },
     createTest: (testCreate: Test) => {
         set({ test: testCreate })
-        AxiosInstance.post('/test/create', testCreate)
-            .then((res) => set({ test: res.data }))
-            .catch(() => {
-                ErrorNotification()
-                set({ test: { name: '', questions: [] } })
-            })
+        if (token) {
+            AxiosInstance.post('/test/create', testCreate)
+                .then((res) => set({ test: res.data }))
+                .catch(() => {
+                    ErrorNotification()
+                    set({ test: { name: '', questions: [] } })
+                })
+        }
     },
 
-    createQuestion: (question: Question) =>
+    createQuestion: (question: Question) => {
         set((state) => ({
             test: {
                 ...state.test,
-                questions: [...state.test.questions, { ...question }],
+                questions: [...state.test.questions, question],
             },
-        })),
-
-    addVariantToQuestion: (variant: Variant, questionIndex: number) =>
-        set((state) => {
-            const updatedQuestions = [...state.test.questions]
-            updatedQuestions[questionIndex].variantAnswer.push(variant)
-            return {
-                test: {
-                    ...state.test,
-                    questions: updatedQuestions,
-                },
-            }
-        }),
+        }))
+    },
 }))

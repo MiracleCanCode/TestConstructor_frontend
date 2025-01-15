@@ -7,7 +7,7 @@ interface Props {
     children: ReactNode
 }
 
-export const RedirectToDashboard: FC<Props> = ({ children }) => {
+export const RedirectTo: FC<Props> = ({ children }) => {
     const pathname = usePathname()
     const params = useParams()
     useEffect(() => {
@@ -15,11 +15,19 @@ export const RedirectToDashboard: FC<Props> = ({ children }) => {
             redirect('/dashboard')
         }
         if (!token && pathname === `/user/${params.login}`) {
-            redirect('/dashboard')
+            redirect('/auth')
+        }
+
+        if (!token && pathname === `/create_test`) {
+            redirect('/auth')
+        }
+
+        if (!token && pathname === `/dashboard`) {
+            redirect('/auth')
         }
     }, [params.login, pathname])
 
     return <>{children}</>
 }
 
-RedirectToDashboard.displayName = 'RedirectToDashboardComponent'
+RedirectTo.displayName = 'RedirectTo'

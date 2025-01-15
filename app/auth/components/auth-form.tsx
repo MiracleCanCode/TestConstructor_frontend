@@ -4,25 +4,14 @@ import { CustomButton } from '@/components/ui'
 import { PasswordInput, TextInput, Title } from '@mantine/core'
 import { useAuthStore } from '@/components/stores/use-auth-store'
 import { useForm } from '@mantine/form'
-import { FC, useEffect } from 'react'
-import Link from 'next/link'
-import { useUrlParams } from '@/components/hooks/use-url-param'
+import { FC } from 'react'
 
 export type AuthState = 'login' | 'registration'
 
 export const AuthForm: FC<{ mode: AuthState; switchMode: () => void }> = ({ mode, switchMode }) => {
     const auth = useAuthStore()
-    const { setUrlParam } = useUrlParams()
 
-    useEffect(() => {
-        if (mode === 'registration') {
-            setUrlParam('mode', 'registration')
-        } else {
-            setUrlParam('mode', 'login')
-        }
-    }, [mode, setUrlParam])
-
-    function validateField(value: string, field: string) {
+    const validateField = (value: string, field: string) => {
         if (mode === 'registration') {
             if (field === 'name' && value.length < 2) return 'Имя не может быть меньше 2 символов'
             if (field === 'email' && !/^\S+@\S+$/.test(value)) return 'Не валидная почта'
@@ -51,9 +40,9 @@ export const AuthForm: FC<{ mode: AuthState; switchMode: () => void }> = ({ mode
     const { name, email, password, login } = form.getValues()
     const submit = () => {
         const user = { name, email, password, login }
-        form.reset()
 
         if (mode === 'registration') {
+            form.reset()
             auth.registration(user, () => {
                 switchMode()
             })
@@ -112,11 +101,6 @@ export const AuthForm: FC<{ mode: AuthState; switchMode: () => void }> = ({ mode
             <CustomButton onClick={toggleMode} w='100%' mt='10px' variant='outline'>
                 {mode === 'login' ? 'Нет аккаунта?' : 'Есть аккаунт?'}
             </CustomButton>
-            <Link href='/'>
-                <CustomButton w='100%' mt='10px' variant='outline'>
-                    На главную
-                </CustomButton>
-            </Link>
         </div>
     )
 }
