@@ -5,10 +5,11 @@ import { ButtonProps } from '@mantine/core'
 
 interface Props extends ButtonProps {
     children: string
+    onClick?: () => void
 }
 
-export const DeleteButton: FC<Props> = ({ children, ...props }) => (
-    <CustomButton leftSection={<FaTrash />} color='red' {...props}>
+export const DeleteButton: FC<Props> = ({ children, onClick, ...props }) => (
+    <CustomButton leftSection={<FaTrash />} color='red' onClick={onClick} {...props}>
         {children}
     </CustomButton>
 )

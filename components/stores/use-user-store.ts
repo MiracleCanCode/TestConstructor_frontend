@@ -34,7 +34,14 @@ export const useUserStore = create<IUseUserStore>((set) => ({
     getUserData: () => {
         if (token) {
             AxiosInstance.get('/user/getData')
-                .then((res) => set({ user: res.data }))
+                .then((res) => {
+                    if (res.data) {
+                        set({ user: res.data })
+                    } else {
+                        localStorage.removeItem('token')
+                    }
+                })
+
                 .catch((err) => {
                     console.log(err)
                     localStorage.removeItem('token')
@@ -61,7 +68,9 @@ export const useUserStore = create<IUseUserStore>((set) => ({
         localStorage.removeItem('token')
     },
     getUserByLogin: (login: string) => {
-        AxiosInstance.post('/user/getByLogin', login)
+        AxiosInstance.post('/user/getByLogin', {
+            login: login,
+        })
             .then((res) => set({ user: res.data }))
             .catch(() => ErrorNotification())
     },

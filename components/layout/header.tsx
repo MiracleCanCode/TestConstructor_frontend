@@ -5,12 +5,11 @@ import {
     Container,
     Divider,
     Flex,
-    Tooltip,
     useComputedColorScheme,
     useMantineColorScheme,
 } from '@mantine/core'
 import { FC, useEffect, useMemo, useState } from 'react'
-import { CustomButton } from '../ui'
+import { CustomButton, CustomTooltip } from '../ui'
 import Link from 'next/link'
 import { usePathname, useParams } from 'next/navigation'
 import { token } from '../helpers/constants/token'
@@ -84,7 +83,7 @@ export const Header: FC = () => {
 
                     {token && pathname !== `/user/${params.login}` && (
                         <Flex justify='flex-end' w='100%' mr='10px'>
-                            <Tooltip label={labelForChangeTheme}>
+                            <CustomTooltip label={labelForChangeTheme}>
                                 <ActionIcon
                                     onClick={() => setColorScheme(computedColorScheme === 'light' ? 'dark' : 'light')}
                                     variant='transparent'
@@ -93,14 +92,14 @@ export const Header: FC = () => {
                                 >
                                     {computedColorScheme === 'light' ? <FiSun size='20' /> : <FiMoon size='20' />}
                                 </ActionIcon>
-                            </Tooltip>
+                            </CustomTooltip>
                         </Flex>
                     )}
                     {token && pathname !== `/user/${params.login}` && (
                         <Link href='/create_test' className=' mr-5'>
-                            <Tooltip label='На страницу с созданием теста'>
+                            <CustomTooltip label='На страницу с созданием теста'>
                                 <FiPlus color={iconColor} size='25' />
-                            </Tooltip>
+                            </CustomTooltip>
                         </Link>
                     )}
                     {token ? pathname === `/user/${params.login}` ? null : <IsAuthContent /> : <DontAuthContent />}

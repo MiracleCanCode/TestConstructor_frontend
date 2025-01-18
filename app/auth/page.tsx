@@ -2,7 +2,7 @@
 import { Flex } from '@mantine/core'
 import { FC, useEffect, useState, useRef } from 'react'
 
-import { AuthForm, AuthState } from './components/auth-form'
+import { AuthForm, AuthState } from '@/components/ui/auth-form'
 import { useUrlParams } from '@/components/hooks/use-url-param'
 
 const Auth: FC = () => {

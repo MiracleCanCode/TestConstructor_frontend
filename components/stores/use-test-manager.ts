@@ -8,6 +8,7 @@ interface UseTestManager {
     tests: Test[]
     getTests: (user_id: number, offset?: number, limit?: number) => void
     deleteTest: (test_id: number) => void
+    changeActive: (test_id: number, is_active: boolean) => void
 }
 
 export const useTestManager = create<UseTestManager>((set) => ({
@@ -23,5 +24,14 @@ export const useTestManager = create<UseTestManager>((set) => ({
     },
     deleteTest: (test_id: number) => {
         AxiosInstance.delete(`/test/delete/${test_id}`).catch(() => ErrorNotification())
+        set((state) => ({
+            tests: state.tests.filter((test) => test.ID !== test_id),
+        }))
+    },
+    changeActive: (test_id: number, is_active: boolean) => {
+        AxiosInstance.put('/test/changeActive', {
+            test_id,
+            is_active,
+        })
     },
 }))

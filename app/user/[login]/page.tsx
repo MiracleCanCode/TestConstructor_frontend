@@ -2,11 +2,11 @@
 import { User, useUserStore } from '@/components/stores/use-user-store'
 import { CustomButton } from '@/components/ui'
 import { Avatar, Flex, TextInput } from '@mantine/core'
-// import { useParams } from 'next/navigation'
+import { useParams } from 'next/navigation'
 import { FC, useEffect, useState } from 'react'
 
 const UserPage: FC = () => {
-    const { user, updateUserData, logout } = useUserStore()
+    const { user, updateUserData, logout, getUserByLogin } = useUserStore()
     const [isUpdateData, setIsUpdateData] = useState(false)
     const [updateData, setUpdateData] = useState<User>({
         name: user.name,
@@ -15,17 +15,18 @@ const UserPage: FC = () => {
         password: '',
         avatar: '',
     })
-    // const params = useParams()
+    const params = useParams()
 
     useEffect(() => {
+        getUserByLogin(params.login as string)
         setUpdateData({
             name: user.name,
             login: user.login,
             email: user.email,
-            password: '',
+            password: user.password,
             avatar: user.avatar,
         })
-    }, [user])
+    }, [getUserByLogin, params.login, user.avatar, user.email, user.login, user.name, user.password])
 
     const handleUpdate = () => {
         if (updateData) {

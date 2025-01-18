@@ -1,8 +1,7 @@
 'use client'
 
-import { Flex, Modal, Switch, Text, Textarea, TextInput } from '@mantine/core'
+import { Flex, Modal, Text, Textarea, TextInput } from '@mantine/core'
 import { FC, useState } from 'react'
-import { token } from '../helpers/constants/token'
 import { CreateQuestionForm } from './create-question-form'
 import { CustomButton } from './custom-button'
 import { useCreateTestStore } from '@/components/stores/use-create-test-store'
@@ -44,7 +43,6 @@ export const CreateTestForm: FC = () => {
                         <TextInput label='Введите название теста' withAsterisk {...form.getInputProps('name')} />
 
                         <Textarea label='Введите описание' mt={10} {...form.getInputProps('description')} />
-                        {token && <Switch label='Анонимный тест' mt={20} />}
                         <CustomButton mt={20} type='submit'>
                             Создать тест
                         </CustomButton>

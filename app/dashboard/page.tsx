@@ -18,10 +18,15 @@ const Dashboard: FC = () => {
             {tests.length > 0 ? (
                 <div>
                     <Text size='xl'>Ваши тесты:</Text>
-                    <Flex mt={20} gap={20}>
+                    <Flex mt={20} gap={20} wrap='wrap'>
                         {tests.map((test) => (
                             <div key={test.ID}>
-                                <TestEntity name={test.name} description={test.description} id={test.ID || 1} />
+                                <TestEntity
+                                    active={test.is_active ?? true}
+                                    name={test.name}
+                                    description={test.description}
+                                    id={test.ID || 1}
+                                />
                             </div>
                         ))}
                     </Flex>

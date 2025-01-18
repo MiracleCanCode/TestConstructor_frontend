@@ -19,6 +19,7 @@ export interface Test {
     name: string
     description?: string
     questions: Question[]
+    is_active?: boolean
 }
 
 interface IUseCreateTestStore {
