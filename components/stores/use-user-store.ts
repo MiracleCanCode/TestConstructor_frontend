@@ -4,7 +4,7 @@ import { ErrorNotification, Notification } from '../ui'
 import { token } from '../helpers/constants/token'
 
 export interface User {
-    ID?: number
+    id?: number
     login: string
     password: string
     email: string
@@ -13,6 +13,7 @@ export interface User {
 }
 
 interface IUseUserStore {
+    loading: boolean
     user: User
     setUser: (user: User) => void
     getUserData: () => void
@@ -21,28 +22,29 @@ interface IUseUserStore {
     getUserByLogin: (login: string) => void
 }
 
-export const useUserStore = create<IUseUserStore>((set) => ({
+export const useUserStore = create<IUseUserStore>(set => ({
+    loading: true,
     user: {
-        ID: 0,
+        id: 0,
         login: '',
         password: '',
         email: '',
         name: '',
-        avatar: '',
+        avatar: ''
     },
     setUser: (user: User) => set({ user: user }),
     getUserData: () => {
         if (token) {
             AxiosInstance.get('/user/getData')
-                .then((res) => {
+                .then(res => {
                     if (res.data) {
-                        set({ user: res.data })
+                        set({ user: res.data, loading: false })
                     } else {
                         localStorage.removeItem('token')
                     }
                 })
 
-                .catch((err) => {
+                .catch(err => {
                     console.log(err)
                     localStorage.removeItem('token')
                 })
@@ -53,11 +55,11 @@ export const useUserStore = create<IUseUserStore>((set) => ({
             user_login: userLogin,
             data: {
                 name: user.name,
-                avatar: user.avatar,
-            },
+                avatar: user.avatar
+            }
         })
             .then(() => {
-                set({ user: user })
+                set({ user: user, loading: false })
                 Notification('Вы успешно обновили свои данные')
             })
             .catch(() => ErrorNotification())
@@ -69,9 +71,9 @@ export const useUserStore = create<IUseUserStore>((set) => ({
     },
     getUserByLogin: (login: string) => {
         AxiosInstance.post('/user/getByLogin', {
-            login: login,
+            login: login
         })
-            .then((res) => set({ user: res.data }))
+            .then(res => set({ user: res.data, loading: false }))
             .catch(() => ErrorNotification())
-    },
+    }
 }))

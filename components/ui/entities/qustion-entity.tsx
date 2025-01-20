@@ -8,9 +8,10 @@ interface Props {
     description?: string
     variants: Variant[]
     questionIndex: number
+    forSolve?: boolean
 }
 
-export const QuestionEntity: FC<Props> = ({ name, description, variants, questionIndex }) => (
+export const QuestionEntity: FC<Props> = ({ name, description, variants, questionIndex, forSolve }) => (
     <Paper shadow='xs' withBorder p='md'>
         <Text>
             Вопрос {questionIndex}. {name}
@@ -19,7 +20,7 @@ export const QuestionEntity: FC<Props> = ({ name, description, variants, questio
         {variants.length > 0 &&
             variants.map((v, idx) => (
                 <div key={idx} className=' mb-3 mt-2'>
-                    <VariantEntity key={idx} index={idx + 1} name={v.name} isCorrect={v.isCorrect} />
+                    <VariantEntity index={idx + 1} name={v.name} isCorrect={v.isCorrect} solve={forSolve} />
                 </div>
             ))}
     </Paper>

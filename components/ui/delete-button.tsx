@@ -1,6 +1,6 @@
 import { FC } from 'react'
 import { CustomButton } from './custom-button'
-import { FaTrash } from 'react-icons/fa'
+import { FaRegTrashCan } from 'react-icons/fa6'
 import { ButtonProps } from '@mantine/core'
 
 interface Props extends ButtonProps {
@@ -9,7 +9,7 @@ interface Props extends ButtonProps {
 }
 
 export const DeleteButton: FC<Props> = ({ children, onClick, ...props }) => (
-    <CustomButton leftSection={<FaTrash />} color='red' onClick={onClick} {...props}>
+    <CustomButton leftSection={<FaRegTrashCan />} color='red' onClick={onClick} {...props}>
         {children}
     </CustomButton>
 )

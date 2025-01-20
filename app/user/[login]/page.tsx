@@ -1,32 +1,33 @@
 'use client'
 import { User, useUserStore } from '@/components/stores/use-user-store'
 import { CustomButton } from '@/components/ui'
+import { CustomLoader } from '@/components/ui/custom-loader'
 import { Avatar, Flex, TextInput } from '@mantine/core'
 import { useParams } from 'next/navigation'
 import { FC, useEffect, useState } from 'react'
 
 const UserPage: FC = () => {
-    const { user, updateUserData, logout, getUserByLogin } = useUserStore()
+    const { user, updateUserData, logout, getUserByLogin, loading } = useUserStore()
     const [isUpdateData, setIsUpdateData] = useState(false)
     const [updateData, setUpdateData] = useState<User>({
         name: user.name,
         login: user.login,
         email: user.email,
         password: '',
-        avatar: '',
+        avatar: ''
     })
-    const params = useParams()
+    const { login } = useParams()
 
     useEffect(() => {
-        getUserByLogin(params.login as string)
+        getUserByLogin(login as string)
         setUpdateData({
             name: user.name,
             login: user.login,
             email: user.email,
             password: user.password,
-            avatar: user.avatar,
+            avatar: user.avatar
         })
-    }, [getUserByLogin, params.login, user.avatar, user.email, user.login, user.name, user.password])
+    }, [getUserByLogin, login, user.avatar, user.email, user.login, user.name, user.password])
 
     const handleUpdate = () => {
         if (updateData) {
@@ -37,6 +38,9 @@ const UserPage: FC = () => {
 
     const isValid = updateData.name != user.name && updateData.login != user.name && updateData.email != user.name
 
+    if (loading) {
+        return <CustomLoader />
+    }
     return (
         <Flex justify='center' align='center' h='80vh'>
             <Flex direction='column' gap={5}>
@@ -44,21 +48,21 @@ const UserPage: FC = () => {
 
                 <TextInput
                     value={updateData.name}
-                    onChange={(e) => setUpdateData({ ...updateData, name: e.currentTarget.value })}
+                    onChange={e => setUpdateData({ ...updateData, name: e.currentTarget.value })}
                     label='Ваше имя'
                     disabled={!isUpdateData}
                     w={400}
                 />
                 <TextInput
                     value={updateData.login}
-                    onChange={(e) => setUpdateData({ ...updateData, login: e.currentTarget.value })}
+                    onChange={e => setUpdateData({ ...updateData, login: e.currentTarget.value })}
                     label='Ваш логин'
                     disabled={!isUpdateData}
                     w={400}
                 />
                 <TextInput
                     value={updateData.email}
-                    onChange={(e) => setUpdateData({ ...updateData, email: e.currentTarget.value })}
+                    onChange={e => setUpdateData({ ...updateData, email: e.currentTarget.value })}
                     label='Ваша почта'
                     disabled={!isUpdateData}
                     w={400}

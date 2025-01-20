@@ -20,17 +20,17 @@ const CreateVariantForm: FC<{
         mode: 'controlled',
         initialValues: {
             name: '',
-            isCorrect: false,
+            isCorrect: false
         },
         validate: {
-            name: (value) => (value.length < 1 ? 'Имя не может быть пустым!' : null),
-        },
+            name: value => (value.length < 1 ? 'Имя не может быть пустым!' : null)
+        }
     })
 
     const submit = () => {
         save({
             name: form.values.name,
-            isCorrect: form.values.isCorrect,
+            isCorrect: form.values.isCorrect
         })
         form.reset()
     }
@@ -57,11 +57,11 @@ export const CreateQuestionForm: FC = () => {
         mode: 'controlled',
         initialValues: {
             name: '',
-            description: '',
+            description: ''
         },
         validate: {
-            name: (value) => (value.length < 1 ? 'Имя не может быть пустым!' : null),
-        },
+            name: value => (value.length < 1 ? 'Имя не может быть пустым!' : null)
+        }
     })
 
     const variantNumber = useMemo(() => {
@@ -79,7 +79,7 @@ export const CreateQuestionForm: FC = () => {
         createQuestion({
             name: name,
             description: description,
-            variants: temporaryVariants,
+            variants: temporaryVariants
         })
         form.reset()
     }
@@ -99,8 +99,10 @@ export const CreateQuestionForm: FC = () => {
             <Divider mt={20} />
             <Text mt={20}>Варианты ответа</Text>
             {temporaryVariants.length >= 1 &&
-                temporaryVariants.map((v, index) => (
-                    <VariantEntity key={index} name={v.name} isCorrect={v.isCorrect} index={index + 1} />
+                temporaryVariants.map((v, idx) => (
+                    <div key={idx}>
+                        <VariantEntity name={v.name} isCorrect={v.isCorrect} index={idx + 1} />
+                    </div>
                 ))}
 
             <CreateVariantForm variantNumber={variantNumber} save={addVariant} />
