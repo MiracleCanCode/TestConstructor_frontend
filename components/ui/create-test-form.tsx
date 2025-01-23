@@ -7,6 +7,7 @@ import { CustomButton } from './custom-button'
 import { useCreateTestStore } from '@/components/stores/use-create-test-store'
 import { QuestionEntity } from './entities/qustion-entity'
 import { useForm } from '@mantine/form'
+import { CustomErrorNotification } from '../helpers/custom-notification-error'
 
 export const CreateTestForm: FC = () => {
     const { test, createTest } = useCreateTestStore()
@@ -16,24 +17,28 @@ export const CreateTestForm: FC = () => {
         mode: 'controlled',
         initialValues: {
             name: '',
-            description: '',
+            description: ''
         },
         validate: {
-            name: (value) => (value.length < 1 ? 'Имя теста не может быть пустым!' : null),
-        },
+            name: value => (value.length < 1 ? 'Имя теста не может быть пустым!' : null)
+        }
     })
 
     const { name, description } = form.getValues()
 
     const submit = () => {
+        if (test.questions?.length < 2) {
+            CustomErrorNotification('Количество вопросов не может быть меньше 2х!')
+            return
+        }
         createTest({
             name: name,
             description: description,
-            questions: test.questions,
+            questions: test.questions
         })
         form.reset()
     }
-
+    const disabledCreateTestButton = test.questions?.length < 2
     return (
         <Flex direction='column' justify='center' align='center'>
             <Flex direction='column'>
@@ -43,7 +48,7 @@ export const CreateTestForm: FC = () => {
                         <TextInput label='Введите название теста' withAsterisk {...form.getInputProps('name')} />
 
                         <Textarea label='Введите описание' mt={10} {...form.getInputProps('description')} />
-                        <CustomButton mt={20} type='submit'>
+                        <CustomButton mt={20} type='submit' disabled={disabledCreateTestButton}>
                             Создать тест
                         </CustomButton>
                         <CustomButton mt={20} color='red' ml={20} variant='subtle'>
@@ -79,3 +84,5 @@ export const CreateTestForm: FC = () => {
         </Flex>
     )
 }
+
+CreateTestForm.displayName = 'CreateTestForm'

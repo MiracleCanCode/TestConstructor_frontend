@@ -1,6 +1,7 @@
 'use client'
 import { useTestManager } from '@/components/stores/use-test-manager'
 import { useUserStore } from '@/components/stores/use-user-store'
+import { CustomButton } from '@/components/ui'
 import { CustomLoader } from '@/components/ui/custom-loader'
 import { TestEntity } from '@/components/ui/entities/test-entity'
 import { Flex, Text, Title } from '@mantine/core'
@@ -39,7 +40,11 @@ const Dashboard: FC = () => {
             ) : (
                 <Flex align='center' justify='center' h='80vh' w='100%'>
                     <Title size='xl'>
-                        У вас нет тестов. <Link href='/create_test'>Создайте</Link>
+                        <Link href='/create_test'>
+                            <CustomButton variant='subtle' size='xl'>
+                                Создайте свой первый тест!
+                            </CustomButton>
+                        </Link>
                     </Title>
                 </Flex>
             )}

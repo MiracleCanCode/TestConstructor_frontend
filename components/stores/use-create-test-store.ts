@@ -5,7 +5,7 @@ import { token } from '../helpers/constants/token'
 
 export interface Variant {
     name: string
-    isCorrect: boolean
+    is_correct: boolean
 }
 
 export interface Question {
@@ -28,16 +28,16 @@ interface IUseCreateTestStore {
     createQuestion: (question: Question) => void
 }
 
-export const useCreateTestStore = create<IUseCreateTestStore>((set) => ({
+export const useCreateTestStore = create<IUseCreateTestStore>(set => ({
     test: {
         name: '',
-        questions: [],
+        questions: []
     },
     createTest: (testCreate: Test) => {
         set({ test: testCreate })
         if (token) {
             AxiosInstance.post('/test/create', testCreate)
-                .then((res) => set({ test: res.data }))
+                .then(res => set({ test: res.data }))
                 .catch(() => {
                     ErrorNotification()
                     set({ test: { name: '', questions: [] } })
@@ -46,11 +46,12 @@ export const useCreateTestStore = create<IUseCreateTestStore>((set) => ({
     },
 
     createQuestion: (question: Question) => {
-        set((state) => ({
+        console.log(question)
+        set(state => ({
             test: {
                 ...state.test,
-                questions: [...state.test.questions, question],
-            },
+                questions: [...state.test.questions, question]
+            }
         }))
-    },
+    }
 }))

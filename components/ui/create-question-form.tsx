@@ -1,53 +1,13 @@
 'use client'
 
-import { Divider, Flex, Switch, Text, Textarea, TextInput } from '@mantine/core'
+import { Divider, Flex, Text, Textarea, TextInput } from '@mantine/core'
 import { FC, useMemo, useState } from 'react'
 import { CustomButton } from '@/components/ui/custom-button'
-import { useCreateTestStore } from '@/components/stores/use-create-test-store'
+import { useCreateTestStore, Variant } from '@/components/stores/use-create-test-store'
 import { VariantEntity } from './entities/variant-entity'
 import { useForm } from '@mantine/form'
-
-interface Variant {
-    name: string
-    isCorrect: boolean
-}
-
-const CreateVariantForm: FC<{
-    variantNumber: number
-    save: (variant: Variant) => void
-}> = ({ variantNumber, save }) => {
-    const form = useForm({
-        mode: 'controlled',
-        initialValues: {
-            name: '',
-            isCorrect: false
-        },
-        validate: {
-            name: value => (value.length < 1 ? 'Имя не может быть пустым!' : null)
-        }
-    })
-
-    const submit = () => {
-        save({
-            name: form.values.name,
-            isCorrect: form.values.isCorrect
-        })
-        form.reset()
-    }
-
-    return (
-        <div className='mt-3'>
-            <Text>Вариант {variantNumber}</Text>
-            <form onSubmit={form.onSubmit(submit)}>
-                <TextInput label='Введите название варианта' {...form.getInputProps('name')} />
-                <Switch label='Правильный вариант' color='green' mt={10} {...form.getInputProps('isCorrect')} />
-                <CustomButton mt={10} type='submit'>
-                    Сохранить
-                </CustomButton>
-            </form>
-        </div>
-    )
-}
+import { CustomErrorNotification } from '../helpers/custom-notification-error'
+import { CreateVariantForm } from './create-variant-form'
 
 export const CreateQuestionForm: FC = () => {
     const { createQuestion } = useCreateTestStore()
@@ -75,12 +35,24 @@ export const CreateQuestionForm: FC = () => {
     const { name, description } = form.getValues()
 
     const submit = () => {
-        console.log()
+        if (temporaryVariants.length < 2) {
+            CustomErrorNotification('Количество вариантов для ответа не может быть меньше 2х!')
+            return
+        }
+        let countIsCorrectVariants = 0
+        temporaryVariants.map(variant => (variant.is_correct === true ? countIsCorrectVariants++ : null))
+
+        if (countIsCorrectVariants < 1) {
+            CustomErrorNotification('Должен быть хотя бы один правильный вариант')
+            return
+        }
+
         createQuestion({
             name: name,
             description: description,
             variants: temporaryVariants
         })
+        setTemporaryVariants([])
         form.reset()
     }
 
@@ -100,8 +72,8 @@ export const CreateQuestionForm: FC = () => {
             <Text mt={20}>Варианты ответа</Text>
             {temporaryVariants.length >= 1 &&
                 temporaryVariants.map((v, idx) => (
-                    <div key={idx}>
-                        <VariantEntity name={v.name} isCorrect={v.isCorrect} index={idx + 1} />
+                    <div key={idx} className=' mb-3'>
+                        <VariantEntity name={v.name} isCorrect={v.is_correct} index={idx + 1} />
                     </div>
                 ))}
 
