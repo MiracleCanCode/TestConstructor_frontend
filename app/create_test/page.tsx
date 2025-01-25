@@ -1,10 +1,10 @@
-import { CreateTestForm } from '@/components/ui/create-test-form'
+import { TestForm } from './components/test-form'
 import { FC } from 'react'
 
 const CreateTest: FC = () => (
-    <div className=' mt-8'>
-        <CreateTestForm />
-    </div>
+	<div className=' mt-8'>
+		<TestForm />
+	</div>
 )
 
 CreateTest.displayName = 'CreateTestPage'

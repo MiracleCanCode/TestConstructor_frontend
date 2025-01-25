@@ -2,54 +2,54 @@
 import { useTestManager } from '@/components/stores/use-test-manager'
 import { useUserStore } from '@/components/stores/use-user-store'
 import { CustomButton } from '@/components/ui'
-import { CustomLoader } from '@/components/ui/custom-loader'
-import { TestEntity } from '@/components/ui/entities/test-entity'
+import { TestEntity } from './components/test-entity'
 import { Flex, Text, Title } from '@mantine/core'
 import Link from 'next/link'
 import { FC, useEffect } from 'react'
+import { SkeletonLoader } from './components/skeleton-loader'
 
 const Dashboard: FC = () => {
-    const { getTests, tests, loading } = useTestManager()
-    const { user } = useUserStore()
+	const { getTests, tests, loading } = useTestManager()
+	const { user } = useUserStore()
 
-    useEffect(() => {
-        getTests(user.id || 0, 0, 5)
-    }, [getTests, user.id])
+	useEffect(() => {
+		getTests(user.id || 0, 0, 5)
+	}, [getTests, user.id])
 
-    if (loading) {
-        return <CustomLoader />
-    }
-    return (
-        <Flex className=' mt-7'>
-            {tests.length > 0 ? (
-                <div>
-                    <Text size='xl'>Ваши тесты:</Text>
-                    <Flex mt={20} gap={20} wrap='wrap'>
-                        {tests.map(test => (
-                            <div key={test.ID}>
-                                <TestEntity
-                                    active={test.is_active ?? true}
-                                    name={test.name}
-                                    description={test.description}
-                                    id={test.ID || 1}
-                                />
-                            </div>
-                        ))}
-                    </Flex>
-                </div>
-            ) : (
-                <Flex align='center' justify='center' h='80vh' w='100%'>
-                    <Title size='xl'>
-                        <Link href='/create_test'>
-                            <CustomButton variant='subtle' size='xl'>
-                                Создайте свой первый тест!
-                            </CustomButton>
-                        </Link>
-                    </Title>
-                </Flex>
-            )}
-        </Flex>
-    )
+	if (loading) {
+		return <SkeletonLoader />
+	}
+	return (
+		<Flex className=' mt-7'>
+			{tests.length > 0 ? (
+				<div>
+					<Text size='xl'>Ваши тесты:</Text>
+					<Flex mt={20} gap={20} wrap='wrap'>
+						{tests.map(test => (
+							<div key={test.ID}>
+								<TestEntity
+									active={test.is_active ?? true}
+									name={test.name}
+									description={test.description}
+									id={test.ID || 1}
+								/>
+							</div>
+						))}
+					</Flex>
+				</div>
+			) : (
+				<Flex align='center' justify='center' h='80vh' w='100%'>
+					<Title size='xl'>
+						<Link href='/create_test'>
+							<CustomButton variant='subtle' size='xl'>
+								Создайте свой первый тест!
+							</CustomButton>
+						</Link>
+					</Title>
+				</Flex>
+			)}
+		</Flex>
+	)
 }
 
 Dashboard.displayName = 'DashboardPage'
