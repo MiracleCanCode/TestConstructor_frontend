@@ -6,7 +6,7 @@ import { TestEntity } from './components/test-entity'
 import { Flex, Text, Title } from '@mantine/core'
 import Link from 'next/link'
 import { FC, useEffect } from 'react'
-import { SkeletonLoader } from './components/skeleton-loader'
+import { CustomLoader } from '@/components/ui/custom-loader'
 
 const Dashboard: FC = () => {
 	const { getTests, tests, loading } = useTestManager()
@@ -17,7 +17,7 @@ const Dashboard: FC = () => {
 	}, [getTests, user.id])
 
 	if (loading) {
-		return <SkeletonLoader />
+		return <CustomLoader />
 	}
 	return (
 		<Flex className=' mt-7'>

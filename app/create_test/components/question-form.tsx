@@ -9,11 +9,13 @@ import { CustomErrorNotification } from '@/components/helpers/custom-notificatio
 import { TestVariantForm } from './test-variant-form'
 import { useCreateTestStore } from '../stores/use-create-test-store'
 import { Variant } from '@/components/helpers/interfaces/interface'
+import { useIsMobileDevice } from '@/components/hooks/use-is-mobile-device'
 
 export const QuestionForm: FC = () => {
 	const { createQuestion } = useCreateTestStore()
 
 	const [temporaryVariants, setTemporaryVariants] = useState<Variant[]>([])
+	const { isMobile } = useIsMobileDevice(1200)
 
 	const variantNumber = useMemo(() => {
 		return temporaryVariants.length + 1
@@ -58,7 +60,7 @@ export const QuestionForm: FC = () => {
 	}
 
 	return (
-		<div className='w-96'>
+		<div className={isMobile ? 'w-full' : 'w-96'}>
 			<form onSubmit={form.onSubmit(submit)}>
 				<TextInput label='Введите название вопроса' withAsterisk {...form.getInputProps('name')} />
 				<Textarea label='Введите описание вопроса' {...form.getInputProps('description')} />

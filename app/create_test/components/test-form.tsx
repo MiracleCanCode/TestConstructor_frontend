@@ -10,11 +10,13 @@ import { CustomErrorNotification } from '@/components/helpers/custom-notificatio
 import { QuestionForm } from './question-form'
 import { useCreateTestStore } from '../stores/use-create-test-store'
 import { QuestionEntity } from './question-entity'
+import { useIsMobileDevice } from '@/components/hooks/use-is-mobile-device'
 
 export const TestForm: FC = () => {
 	const { test, createTest } = useCreateTestStore()
 	const [openCreateQuestionModal, setOpenCreateQuestionModal] = useState<boolean>(false)
 	const isCreateTestButtonDisabled = test.questions?.length < 2
+	const { isMobile } = useIsMobileDevice(1200)
 
 	const form = useForm({
 		mode: 'controlled',
@@ -45,11 +47,11 @@ export const TestForm: FC = () => {
 	}
 
 	return (
-		<Flex direction='column' justify='center' align='center'>
-			<Flex direction='column'>
+		<Flex direction='column' justify='center' align='center' wrap='wrap'>
+			<Flex direction='column' wrap='wrap'>
 				<Text size='xl'>Настройки теста</Text>
 
-				<div className='w-700'>
+				<div className={isMobile ? 'w-full' : 'w-700'}>
 					<form onSubmit={form.onSubmit(handleSubmit)}>
 						<TextInput label='Введите название теста' withAsterisk {...form.getInputProps('name')} />
 

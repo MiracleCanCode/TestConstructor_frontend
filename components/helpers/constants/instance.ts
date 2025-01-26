@@ -2,7 +2,7 @@ import axios from 'axios'
 import { token } from './token'
 
 export const AxiosInstance = axios.create({
-	baseURL: 'http://localhost:8080/api'
+	baseURL: 'https://stranger-question-kid-defence.trycloudflare.com/api'
 })
 
 AxiosInstance.interceptors.request.use(
