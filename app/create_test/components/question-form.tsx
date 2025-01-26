@@ -16,7 +16,7 @@ export const QuestionForm: FC = () => {
 	const [temporaryVariants, setTemporaryVariants] = useState<Variant[]>([])
 
 	const variantNumber = useMemo(() => {
-		return temporaryVariants.length++
+		return temporaryVariants.length + 1
 	}, [temporaryVariants])
 
 	const addVariant = (variant: Variant) => {
