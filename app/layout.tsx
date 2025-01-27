@@ -9,7 +9,6 @@ import React from 'react'
 import { Notifications } from '@mantine/notifications'
 import { Container } from '@mantine/core'
 import { Header } from '@/components/layout/header'
-import { RedirectTo } from '@/components/ui/redirect-to'
 
 const font = Montserrat({ subsets: ['latin'] })
 
@@ -31,7 +30,7 @@ export default function RootLayout({
 						<Header />
 
 						<Notifications />
-						<RedirectTo>{children}</RedirectTo>
+						{children}
 					</Container>
 				</MantineProvider>
 			</body>

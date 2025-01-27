@@ -25,7 +25,7 @@ const TestPage: FC = () => {
 
 	useEffect(() => {
 		getTestById(Number(id))
-	}, [id])
+	}, [getTestById, id])
 
 	const handleVariantClick = (questionId: number, variantId: number) => {
 		setSelectedAnswers(prev => ({

@@ -6,7 +6,7 @@ import { CustomButton } from '@/components/ui/custom-button'
 import { VariantEntity } from '@/components/ui/variant-entity'
 import { useForm } from '@mantine/form'
 import { CustomErrorNotification } from '@/components/helpers/custom-notification-error'
-import { TestVariantForm } from './test-variant-form'
+import { VariantForm } from './variant-form'
 import { useCreateTestStore } from '../stores/use-create-test-store'
 import { Variant } from '@/components/helpers/interfaces/interface'
 import { useIsMobileDevice } from '@/components/hooks/use-is-mobile-device'
@@ -80,7 +80,7 @@ export const QuestionForm: FC = () => {
 					</div>
 				))}
 
-			<TestVariantForm variantNumber={variantNumber} save={addVariant} />
+			<VariantForm variantNumber={variantNumber} save={addVariant} />
 		</div>
 	)
 }

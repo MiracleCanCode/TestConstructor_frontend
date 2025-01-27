@@ -10,7 +10,7 @@ interface FormValues {
 	isCorrect: boolean
 }
 
-export const TestVariantForm: FC<{
+export const VariantForm: FC<{
 	variantNumber: number
 	save: (variant: Variant) => void
 }> = ({ variantNumber, save }) => {
@@ -52,4 +52,4 @@ export const TestVariantForm: FC<{
 	)
 }
 
-TestVariantForm.displayName = 'TestVariantForm'
+VariantForm.displayName = 'TestVariantForm'
