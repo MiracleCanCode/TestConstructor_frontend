@@ -5,9 +5,9 @@ import { CustomButton } from '../../../components/ui/custom-button'
 import { DeleteButton } from '../../../components/ui/delete-button'
 import { CiPause1, CiPlay1 } from 'react-icons/ci'
 import { CustomTooltip } from '../../../components/ui/custom-tooltip'
-import { useViewportSize } from '@mantine/hooks'
 import { useTestManager } from '@/components/stores/use-test-manager'
 import { FiCopy, FiCheck } from 'react-icons/fi'
+import { useViewportSize } from '@mantine/hooks'
 
 interface Props {
 	name: string
@@ -24,7 +24,7 @@ interface IRenderTestEntity extends Omit<Props, 'active'> {
 	ChangeActiveAction: () => void
 	actionName: string
 	testURL: string
-	width: number
+	isMobile: boolean
 }
 
 const RenderTestEntity: FC<IRenderTestEntity> = ({
@@ -38,9 +38,9 @@ const RenderTestEntity: FC<IRenderTestEntity> = ({
 	icon,
 	label,
 	isActive,
-	width
+	isMobile
 }) => (
-	<Paper shadow='xs' withBorder p='md' w={width <= 552 ? '100%' : 500}>
+	<Paper shadow='xs' withBorder p='md' w={isMobile ? '100%' : 500}>
 		<Link href={`/test/${id}`}>
 			<Text>{name}</Text>
 		</Link>
@@ -108,7 +108,7 @@ export const TestEntity: FC<Props> = ({ name, description, id, active }) => {
 		<RenderTestEntity
 			name={name}
 			description={description}
-			width={width}
+			isMobile={width <= 1200}
 			testURL={testURL}
 			label={label}
 			icon={icon}

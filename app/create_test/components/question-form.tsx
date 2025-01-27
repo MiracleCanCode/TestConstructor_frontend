@@ -9,13 +9,14 @@ import { CustomErrorNotification } from '@/components/helpers/custom-notificatio
 import { VariantForm } from './variant-form'
 import { useCreateTestStore } from '../stores/use-create-test-store'
 import { Variant } from '@/components/helpers/interfaces/interface'
-import { useIsMobileDevice } from '@/components/hooks/use-is-mobile-device'
+import { useViewportSize } from '@mantine/hooks'
 
 export const QuestionForm: FC = () => {
 	const { createQuestion } = useCreateTestStore()
 
 	const [temporaryVariants, setTemporaryVariants] = useState<Variant[]>([])
-	const { isMobile } = useIsMobileDevice(1200)
+	const { width } = useViewportSize()
+	const formSize = useMemo(() => (width <= 1200 ? 'w-full' : 'w-96'), [width])
 
 	const variantNumber = useMemo(() => {
 		return temporaryVariants.length + 1
@@ -60,7 +61,7 @@ export const QuestionForm: FC = () => {
 	}
 
 	return (
-		<div className={isMobile ? 'w-full' : 'w-96'}>
+		<div className={formSize}>
 			<form onSubmit={form.onSubmit(submit)}>
 				<TextInput label='Введите название вопроса' withAsterisk {...form.getInputProps('name')} />
 				<Textarea label='Введите описание вопроса' {...form.getInputProps('description')} />

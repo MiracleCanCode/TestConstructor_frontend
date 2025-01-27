@@ -12,7 +12,7 @@ import { FC, useEffect, useMemo, useState } from 'react'
 import { CustomButton, CustomTooltip } from '../ui'
 import Link from 'next/link'
 import { usePathname, useParams } from 'next/navigation'
-import { token } from '../helpers/constants/token'
+import { useGetToken } from '../hooks/use-get-token'
 import { useUserStore } from '../stores/use-user-store'
 import { FaArrowLeft } from 'react-icons/fa'
 import { FiMoon } from 'react-icons/fi'
@@ -53,6 +53,7 @@ export const Header: FC = () => {
 	const computedColorScheme = useComputedColorScheme('light', {
 		getInitialValueInEffect: true
 	})
+	const { token } = useGetToken()
 	const { getUserData } = useUserStore()
 	const iconColor = useMemo(() => (computedColorScheme === 'light' ? 'black' : 'white'), [computedColorScheme])
 	const labelForChangeTheme = useMemo(
@@ -60,14 +61,14 @@ export const Header: FC = () => {
 		[computedColorScheme]
 	)
 	const content = token ? pathname === `/user/${params.login}` ? null : <IsAuthContent /> : <DontAuthContent />
-	const isMainPage = useMemo(() => token && pathname !== `/user/${params.login}`, [pathname, params])
+	const isMainPage = useMemo(() => token && pathname !== `/user/${params.login}`, [token, pathname, params.login])
 
 	useEffect(() => {
-		if (token) getUserData()
+		if (token) getUserData(token)
 
 		setIsVisible(pathname !== '/auth')
 		setShowBackButton(pathname !== '/dashboard')
-	}, [pathname, getUserData])
+	}, [pathname, getUserData, token])
 
 	if (!isVisible) return null
 

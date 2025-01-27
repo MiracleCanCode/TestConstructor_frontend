@@ -1,14 +1,13 @@
 import { create } from 'zustand'
 
 import { AxiosInstance } from '../helpers/constants/instance'
-import { token } from '../helpers/constants/token'
 import { ErrorNotification } from '../ui'
 import { Test } from '../helpers/interfaces/interface'
 
 interface UseTestManager {
 	tests: Test[]
 	loading: boolean
-	getTests: (user_id: number, offset?: number, limit?: number) => void
+	getTests: (user_id: number, offset?: number, limit?: number, token?: string) => void
 	deleteTest: (test_id: number) => void
 	changeActive: (test_id: number, is_active: boolean) => void
 }
@@ -16,7 +15,7 @@ interface UseTestManager {
 export const useTestManager = create<UseTestManager>(set => ({
 	tests: [],
 	loading: true,
-	getTests: (user_id: number, offset?: number, limit?: number) => {
+	getTests: (user_id: number, offset?: number, limit?: number, token?: string) => {
 		if (token && user_id !== 0) {
 			AxiosInstance.post('/test/getAll', {
 				offset: offset,

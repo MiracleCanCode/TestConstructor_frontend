@@ -1,7 +1,7 @@
 'use client'
 
 import { Flex, Modal, Text, Textarea, TextInput } from '@mantine/core'
-import { FC, useState } from 'react'
+import { FC, useMemo, useState } from 'react'
 
 import { CustomButton } from '@/components/ui/custom-button'
 
@@ -10,13 +10,16 @@ import { CustomErrorNotification } from '@/components/helpers/custom-notificatio
 import { QuestionForm } from './question-form'
 import { useCreateTestStore } from '../stores/use-create-test-store'
 import { QuestionEntity } from './question-entity'
-import { useIsMobileDevice } from '@/components/hooks/use-is-mobile-device'
+import { useViewportSize } from '@mantine/hooks'
+import { useGetToken } from '@/components/hooks/use-get-token'
 
 export const TestForm: FC = () => {
 	const { test, createTest } = useCreateTestStore()
 	const [openCreateQuestionModal, setOpenCreateQuestionModal] = useState<boolean>(false)
 	const isCreateTestButtonDisabled = test.questions?.length < 2
-	const { isMobile } = useIsMobileDevice(1200)
+	const { width } = useViewportSize()
+	const formSize = useMemo(() => (width <= 800 ? 'w-full' : 'w-700'), [width])
+	const { token } = useGetToken()
 
 	const form = useForm({
 		mode: 'controlled',
@@ -37,11 +40,14 @@ export const TestForm: FC = () => {
 			return
 		}
 
-		createTest({
-			name,
-			description,
-			questions: test.questions
-		})
+		createTest(
+			{
+				name,
+				description,
+				questions: test.questions
+			},
+			token || ''
+		)
 
 		form.reset()
 	}
@@ -51,7 +57,7 @@ export const TestForm: FC = () => {
 			<Flex direction='column' wrap='wrap'>
 				<Text size='xl'>Настройки теста</Text>
 
-				<div className={isMobile ? 'w-full' : 'w-700'}>
+				<div className={formSize}>
 					<form onSubmit={form.onSubmit(handleSubmit)}>
 						<TextInput label='Введите название теста' withAsterisk {...form.getInputProps('name')} />
 

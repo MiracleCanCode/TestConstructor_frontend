@@ -7,14 +7,16 @@ import { Flex, Text, Title } from '@mantine/core'
 import Link from 'next/link'
 import { FC, useEffect } from 'react'
 import { CustomLoader } from '@/components/ui/custom-loader'
+import { useGetToken } from '@/components/hooks/use-get-token'
 
 const Dashboard: FC = () => {
 	const { getTests, tests, loading } = useTestManager()
 	const { user } = useUserStore()
+	const { token } = useGetToken()
 
 	useEffect(() => {
-		getTests(user.id || 0, 0, 5)
-	}, [getTests, user.id])
+		getTests(user.id || 0, 0, 5, token || '')
+	}, [getTests, token, user.id])
 
 	if (loading) {
 		return <CustomLoader />

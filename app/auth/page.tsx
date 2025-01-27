@@ -17,7 +17,7 @@ const Auth: FC = () => {
 			}
 			initialRender.current = false
 		}
-	}, [])
+	}, [getUrlParam])
 
 	useEffect(() => {
 		setUrlParam('mode', mode)

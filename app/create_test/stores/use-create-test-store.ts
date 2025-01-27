@@ -1,13 +1,12 @@
 import { create } from 'zustand'
 
 import { Question, Test } from '@/components/helpers/interfaces/interface'
-import { token } from '@/components/helpers/constants/token'
 import { AxiosInstance } from '@/components/helpers/constants/instance'
 import { ErrorNotification } from '@/components/ui'
 
 interface IUseCreateTestStore {
 	test: Test
-	createTest: (test: Test) => void
+	createTest: (test: Test, token: string) => void
 	createQuestion: (question: Question) => void
 }
 
@@ -16,7 +15,7 @@ export const useCreateTestStore = create<IUseCreateTestStore>(set => ({
 		name: '',
 		questions: []
 	},
-	createTest: (testCreate: Test) => {
+	createTest: (testCreate: Test, token: string) => {
 		set({ test: testCreate })
 		if (token) {
 			AxiosInstance.post('/test/create', testCreate)
