@@ -61,14 +61,14 @@ const UserPage: FC = () => {
 					value={updateData.login}
 					onChange={e => setUpdateData({ ...updateData, login: e.currentTarget.value })}
 					label='Ваш логин'
-					disabled={!isUpdateData}
+					disabled
 					w={inputSize}
 				/>
 				<TextInput
 					value={updateData.email}
 					onChange={e => setUpdateData({ ...updateData, email: e.currentTarget.value })}
 					label='Ваша почта'
-					disabled={!isUpdateData}
+					disabled
 					w={inputSize}
 				/>
 				<CustomButton
