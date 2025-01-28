@@ -1,19 +1,14 @@
 import { create } from 'zustand'
 import { AxiosInstance } from '../helpers/constants/instance'
-import { ErrorNotification, Notification } from '../ui'
+import { Notification } from '../ui'
+import { User } from '../helpers/interfaces/interface'
 
-export interface User {
-	id?: number
-	login: string
-	password: string
-	email: string
-	name: string
-	avatar?: string
-}
-
-interface IUseUserStore {
+interface State {
 	loading: boolean
 	user: User
+}
+
+interface Actions {
 	setUser: (user: User) => void
 	getUserData: (token: string) => void
 	updateUserData: (user: User, userLogin: string) => void
@@ -21,7 +16,7 @@ interface IUseUserStore {
 	getUserByLogin: (login: string) => void
 }
 
-export const useUserStore = create<IUseUserStore>(set => ({
+export const useUserStore = create<State & Actions>(set => ({
 	loading: true,
 	user: {
 		id: 0,
@@ -31,21 +26,18 @@ export const useUserStore = create<IUseUserStore>(set => ({
 		name: '',
 		avatar: ''
 	},
-	setUser: (user: User) => set({ user: user }),
+	setUser: (user: User) => set({ user }),
 	getUserData: (token: string) => {
 		if (token) {
 			AxiosInstance.get('/user/getData')
 				.then(res => {
 					if (res.data) {
 						set({ user: res.data, loading: false })
-					} else {
-						localStorage.removeItem('token')
 					}
 				})
-
 				.catch(err => {
-					console.log(err)
-					localStorage.removeItem('token')
+					const errorMessage = err.response?.data?.error || 'Ошибка при получении данных пользователя'
+					Notification(errorMessage, 'red')
 				})
 		}
 	},
@@ -58,21 +50,26 @@ export const useUserStore = create<IUseUserStore>(set => ({
 			}
 		})
 			.then(() => {
-				set({ user: user, loading: false })
-				Notification('Вы успешно обновили свои данные')
+				set({ user, loading: false })
+				Notification('Вы успешно обновили свои данные', 'green')
 			})
-			.catch(() => ErrorNotification())
+			.catch(err => {
+				const errorMessage = err.response?.data?.error || 'Ошибка при обновлении данных пользователя'
+				Notification(errorMessage, 'red')
+			})
 	},
 	logout: () => {
 		Notification('Вы успешно вышли из аккаунта!', 'green')
 		location.reload()
-		localStorage.removeItem('token')
 	},
 	getUserByLogin: (login: string) => {
 		AxiosInstance.post('/user/getByLogin', {
-			login: login
+			login
 		})
 			.then(res => set({ user: res.data, loading: false }))
-			.catch(() => ErrorNotification())
+			.catch(err => {
+				const errorMessage = err.response?.data?.error || 'Ошибка при получении пользователя по логину'
+				Notification(errorMessage, 'red')
+			})
 	}
 }))

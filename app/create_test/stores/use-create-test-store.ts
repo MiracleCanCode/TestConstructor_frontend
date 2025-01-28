@@ -2,38 +2,52 @@ import { create } from 'zustand'
 
 import { Question, Test } from '@/components/helpers/interfaces/interface'
 import { AxiosInstance } from '@/components/helpers/constants/instance'
-import { ErrorNotification } from '@/components/ui'
+import { Notification } from '@/components/ui/notification'
 
-interface IUseCreateTestStore {
+interface State {
+	createTestError: string
 	test: Test
-	createTest: (test: Test, token: string) => void
-	createQuestion: (question: Question) => void
 }
 
-export const useCreateTestStore = create<IUseCreateTestStore>(set => ({
+interface Actions {
+	createTest: (test: Test, token: string) => void
+	createQuestion: (question: Question) => void
+	clearTest: () => void
+	clearError: () => void
+}
+
+export const useCreateTestStore = create<State & Actions>(set => ({
+	createTestError: '',
 	test: {
 		name: '',
 		questions: []
 	},
 	createTest: (testCreate: Test, token: string) => {
-		set({ test: testCreate })
-		if (token) {
-			AxiosInstance.post('/test/create', testCreate)
-				.then(res => set({ test: res.data }))
-				.catch(() => {
-					ErrorNotification()
-					set({ test: { name: '', questions: [] } })
-				})
+		if (!token) {
+			set({ createTestError: 'Токен отсутствует. Тест не будет сохранен.' })
+			Notification('Токен отсутствует. Тест не будет сохранен.', 'red')
+			return
 		}
-	},
 
+		AxiosInstance.post('/test/create', testCreate)
+			.then(res => {
+				set({ test: res.data, createTestError: '' })
+				Notification('Тест успешно создан!', 'green')
+			})
+			.catch(error => {
+				const errorMessage = error.response?.data?.error || 'Произошла ошибка'
+				set({ test: { name: '', questions: [] }, createTestError: errorMessage })
+				Notification(errorMessage, 'red')
+			})
+	},
 	createQuestion: (question: Question) => {
-		console.log(question)
 		set(state => ({
 			test: {
 				...state.test,
 				questions: [...state.test.questions, question]
 			}
 		}))
-	}
+	},
+	clearTest: () => set(() => ({ test: { name: '', questions: [] } })),
+	clearError: () => set({ createTestError: '' })
 }))

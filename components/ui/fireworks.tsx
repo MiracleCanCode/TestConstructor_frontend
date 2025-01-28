@@ -23,6 +23,7 @@ interface FireworksProps {
 	fadeOut?: boolean
 	burstTimeout?: number
 	burstCount?: number
+	style?: React.CSSProperties
 }
 
 export const Fireworks: React.FC<FireworksProps> = ({
@@ -35,12 +36,12 @@ export const Fireworks: React.FC<FireworksProps> = ({
 	maxLife = 3,
 	gravity = 0.1,
 	fadeOut = true,
-	burstTimeout = 1000,
-	burstCount = 5
+	burstCount = 5,
+	style
 }) => {
 	const canvasRef = useRef<HTMLCanvasElement>(null)
-	const [particles, setParticles] = useState<Particle[]>([])
 	const [burstIndex, setBurstIndex] = useState(0)
+	const particlesRef = useRef<Particle[]>([]) // Используем ref для хранения частиц
 
 	useEffect(() => {
 		const canvas = canvasRef.current
@@ -74,31 +75,29 @@ export const Fireworks: React.FC<FireworksProps> = ({
 					alpha: 1
 				})
 			}
-			setParticles(prevParticles => [...prevParticles, ...newParticles])
+			particlesRef.current = newParticles // Сохраняем частицы в ref
 		}
 
 		const animate = () => {
 			ctx.clearRect(0, 0, canvas.width, canvas.height)
-			setParticles(prevParticles => {
-				const updatedParticles = prevParticles
-					.map(particle => {
-						const updatedParticle = {
-							...particle,
-							x: particle.x + particle.vx,
-							y: particle.y + particle.vy,
-							vy: particle.vy + gravity,
-							life: particle.life - 0.01
-						}
-						if (fadeOut) {
-							updatedParticle.alpha = Math.max(0, updatedParticle.life)
-						}
-						return updatedParticle
-					})
-					.filter(particle => particle.life > 0)
-				return updatedParticles
-			})
 
-			particles.forEach(particle => {
+			particlesRef.current = particlesRef.current
+				.map(particle => {
+					const updatedParticle = {
+						...particle,
+						x: particle.x + particle.vx,
+						y: particle.y + particle.vy,
+						vy: particle.vy + gravity,
+						life: particle.life - 0.01
+					}
+					if (fadeOut) {
+						updatedParticle.alpha = Math.max(0, updatedParticle.life)
+					}
+					return updatedParticle
+				})
+				.filter(particle => particle.life > 0)
+
+			particlesRef.current.forEach(particle => {
 				ctx.beginPath()
 				ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2)
 				ctx.fillStyle = particle.color
@@ -106,6 +105,7 @@ export const Fireworks: React.FC<FireworksProps> = ({
 				ctx.fill()
 				ctx.globalAlpha = 1
 			})
+
 			animationFrameId = requestAnimationFrame(animate)
 		}
 
@@ -133,10 +133,8 @@ export const Fireworks: React.FC<FireworksProps> = ({
 		minLife,
 		minSpeed,
 		numberOfParticles,
-		particleSize,
-		burstTimeout,
-		particles
+		particleSize
 	])
 
-	return <canvas ref={canvasRef} style={{ top: 0, left: 0, pointerEvents: 'none' }} />
+	return <canvas ref={canvasRef} style={style} />
 }

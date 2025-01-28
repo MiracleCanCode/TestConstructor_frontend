@@ -42,7 +42,7 @@ const RenderTestEntity: FC<IRenderTestEntity> = ({
 }) => (
 	<Paper shadow='xs' withBorder p='md' w={isMobile ? '100%' : 500}>
 		<Link href={`/test/${id}`}>
-			<Text>{name}</Text>
+			<Text size='xl'>{name}</Text>
 		</Link>
 		<Text>{description}</Text>
 		<Flex mt={20} gap={10}>

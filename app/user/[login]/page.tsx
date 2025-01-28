@@ -1,5 +1,6 @@
 'use client'
-import { User, useUserStore } from '@/components/stores/use-user-store'
+import { User } from '@/components/helpers/interfaces/interface'
+import { useUserStore } from '@/components/stores/use-user-store'
 import { CustomButton } from '@/components/ui'
 import { CustomLoader } from '@/components/ui/custom-loader'
 import { Avatar, Flex, TextInput } from '@mantine/core'

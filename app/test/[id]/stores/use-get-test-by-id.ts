@@ -2,25 +2,35 @@ import { create } from 'zustand'
 
 import { AxiosInstance } from '@/components/helpers/constants/instance'
 import { Test } from '@/components/helpers/interfaces/interface'
+import { redirect } from 'next/navigation'
 
-interface UseGetTestById {
+interface State {
 	loading: boolean
 	test: Test
+}
+
+interface Actions {
 	getTestById: (id: number) => void
 }
 
-export const useGetTestById = create<UseGetTestById>(set => ({
-	loading: true,
+export const useGetTestById = create<State & Actions>(set => ({
+	loading: false,
 	test: {
 		name: '',
 		questions: []
 	},
-	getTestById: (id: number) => {
-		AxiosInstance.get(`/test/getById/${id}`).then(res =>
+	getTestById: async (id: number) => {
+		try {
+			set({ loading: true })
+			const res = await AxiosInstance.get(`/test/getById/${id}`)
 			set({
 				test: res.data,
 				loading: false
 			})
-		)
+		} catch (err) {
+			set({ loading: false, test: { name: '', questions: [] } })
+			console.error(err)
+			redirect('/not_found')
+		}
 	}
 }))

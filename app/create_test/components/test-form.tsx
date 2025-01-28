@@ -14,7 +14,7 @@ import { useViewportSize } from '@mantine/hooks'
 import { useGetToken } from '@/components/hooks/use-get-token'
 
 export const TestForm: FC = () => {
-	const { test, createTest } = useCreateTestStore()
+	const { test, createTest, clearTest } = useCreateTestStore()
 	const [openCreateQuestionModal, setOpenCreateQuestionModal] = useState<boolean>(false)
 	const isCreateTestButtonDisabled = test.questions?.length < 2
 	const { width } = useViewportSize()
@@ -52,6 +52,11 @@ export const TestForm: FC = () => {
 		form.reset()
 	}
 
+	const clear = () => {
+		clearTest()
+		form.reset()
+	}
+
 	return (
 		<Flex direction='column' justify='center' align='center' wrap='wrap'>
 			<Flex direction='column' wrap='wrap'>
@@ -67,7 +72,11 @@ export const TestForm: FC = () => {
 							Создать тест
 						</CustomButton>
 
-						<CustomButton mt={20} color='red' ml={20} variant='subtle'>
+						<CustomButton ml={20} mt={20} type='button' variant='subtle'>
+							Сохранить тест
+						</CustomButton>
+
+						<CustomButton mt={20} color='red' ml={20} variant='subtle' onClick={clear}>
 							Стереть тест
 						</CustomButton>
 					</form>
@@ -77,17 +86,16 @@ export const TestForm: FC = () => {
 					Вопросы теста
 				</Text>
 
+				<CustomButton variant='outline' onClick={() => setOpenCreateQuestionModal(true)}>
+					Создать вопрос
+				</CustomButton>
 				{Array.isArray(test.questions) &&
 					test.questions.length > 0 &&
 					test.questions.map((question, idx) => (
-						<div key={idx} className='mb-3'>
+						<div key={idx} className='mt-3'>
 							<QuestionEntity name={question.name} questionIndex={idx + 1} variants={question.variants} />
 						</div>
 					))}
-
-				<CustomButton mt={10} variant='outline' onClick={() => setOpenCreateQuestionModal(true)}>
-					Создать вопрос
-				</CustomButton>
 
 				<Modal
 					opened={openCreateQuestionModal}

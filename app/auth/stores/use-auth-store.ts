@@ -1,49 +1,60 @@
 import { AxiosInstance } from '@/components/helpers/constants/instance'
 import { create } from 'zustand'
-import { ErrorNotification, Notification } from '@/components/ui'
+import { Notification } from '@/components/ui'
 import { useUserStore } from '../../../components/stores/use-user-store'
+import { redirect } from 'next/navigation'
 
-interface User {
+interface State {
 	login: string
 	password: string
 	email: string
 	name: string
 }
 
-interface IUseAuthStore {
-	auth: (user: User) => void
-	registration: (user: User, onSuccess: () => void) => void
+interface Error {
+	authError: string
 }
 
-export const useAuthStore = create<IUseAuthStore>(() => ({
-	auth: (user: User) => {
+interface Actions {
+	auth: (user: State) => void
+	registration: (user: State, onSuccess: () => void) => void
+}
+
+export const useAuthStore = create<Actions & Error>(set => ({
+	authError: '',
+	auth: (user: State) => {
 		AxiosInstance.post('/auth/login', {
 			login: user.login,
 			password: user.password
 		})
-			.then(res => {
+			.then(response => {
+				const userData = response.data
 				Notification('Вы успешно вошли в аккаунт!', 'green')
-				location.reload()
-				localStorage.setItem('token', res.data.token)
-				useUserStore.getState().setUser(user)
+				useUserStore.getState().setUser(userData)
+				redirect('/')
 			})
 			.catch(error => {
-				ErrorNotification()
-				console.error('Login failed', error)
+				const errorMessage = error.response?.data?.error || 'Произошла ошибка'
+				set(() => ({
+					authError: errorMessage
+				}))
+				Notification(errorMessage, 'red')
 			})
 	},
-	registration: (user: User, onSuccess: () => void) => {
+	registration: (user: State, onSuccess: () => void) => {
 		AxiosInstance.post('/auth/registration', user)
 			.then(() => {
 				Notification('Вы успешно зарегистрировались!', 'green')
-
 				if (onSuccess) {
 					onSuccess()
 				}
 			})
 			.catch(error => {
-				ErrorNotification()
-				console.error('Registration failed', error)
+				const errorMessage = error.response?.data?.error || 'Произошла ошибка'
+				set(() => ({
+					authError: errorMessage
+				}))
+				Notification(errorMessage, 'red')
 			})
 	}
 }))
