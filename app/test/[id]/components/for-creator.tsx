@@ -1,24 +1,20 @@
 import { Test } from '@/components/helpers/interfaces/interface'
 import { useTestManager } from '@/components/stores/use-test-manager'
-import { CustomButton } from '@/components/ui'
 import { DeleteButton } from '@/components/ui/delete-button'
-import { Badge, ButtonVariant, Container, Flex, Title } from '@mantine/core'
-import { FC } from 'react'
-
-const Button: FC<{ children: string; variant?: ButtonVariant; onClick?: () => void }> = ({
-	children,
-	variant,
-	onClick
-}) => (
-	<CustomButton size='compact-sm' variant={variant} onClick={onClick}>
-		{children}
-	</CustomButton>
-)
+import { Badge, Container, Flex, Title } from '@mantine/core'
+import { FC, useMemo, useState } from 'react'
+import { Button } from './button'
 
 export const ForCreator: FC<{ test: Test }> = ({ test }) => {
 	const { deleteTest, changeActive } = useTestManager()
-	const activeStatusBadgeText = test.is_active ? 'Активен' : 'Не активен'
-	const activeStatusBadgeVariant = test.is_active ? 'filled' : 'outline'
+	const [isActive, setIsActive] = useState<boolean>(test.is_active ?? false)
+	const activeStatusBadgeText = useMemo(() => (isActive ? 'Активен' : 'Не активен'), [isActive])
+	const activeStatusBadgeVariant = useMemo(() => (isActive ? 'filled' : 'outline'), [isActive])
+
+	const changeTestActive = () => {
+		changeActive(test.ID || 0, !isActive || false)
+		setIsActive(!isActive)
+	}
 	return (
 		<Container>
 			<Flex direction='column' justify='center' h='80vh' wrap='wrap'>
@@ -31,7 +27,7 @@ export const ForCreator: FC<{ test: Test }> = ({ test }) => {
 				</Flex>
 				<Flex mt={10} gap={10} wrap='wrap'>
 					<Button>Изменить тест</Button>
-					<Button variant='outline' onClick={() => changeActive(test.ID || 0, test.is_active || false)}>
+					<Button variant='outline' onClick={changeTestActive}>
 						Изменить видимость теста
 					</Button>
 					<DeleteButton onClick={() => deleteTest(test.ID || 0)} size='compact-sm' variant='outline'>

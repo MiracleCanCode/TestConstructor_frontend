@@ -2,7 +2,7 @@ import { AxiosInstance } from '@/components/helpers/constants/instance'
 import { create } from 'zustand'
 import { Notification } from '@/components/ui'
 import { useUserStore } from '../../../components/stores/use-user-store'
-import { redirect } from 'next/navigation'
+import { errorMessage } from '@/components/helpers/error-message'
 
 interface State {
 	login: string
@@ -31,14 +31,13 @@ export const useAuthStore = create<Actions & Error>(set => ({
 				const userData = response.data
 				Notification('Вы успешно вошли в аккаунт!', 'green')
 				useUserStore.getState().setUser(userData)
-				redirect('/')
+				window.location.reload()
 			})
 			.catch(error => {
-				const errorMessage = error.response?.data?.error || 'Произошла ошибка'
 				set(() => ({
-					authError: errorMessage
+					authError: errorMessage(error)
 				}))
-				Notification(errorMessage, 'red')
+				Notification(errorMessage(error), 'red')
 			})
 	},
 	registration: (user: State, onSuccess: () => void) => {
@@ -50,11 +49,10 @@ export const useAuthStore = create<Actions & Error>(set => ({
 				}
 			})
 			.catch(error => {
-				const errorMessage = error.response?.data?.error || 'Произошла ошибка'
 				set(() => ({
-					authError: errorMessage
+					authError: errorMessage(error)
 				}))
-				Notification(errorMessage, 'red')
+				Notification(errorMessage(error), 'red')
 			})
 	}
 }))

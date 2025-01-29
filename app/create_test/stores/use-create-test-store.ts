@@ -3,6 +3,7 @@ import { create } from 'zustand'
 import { Question, Test } from '@/components/helpers/interfaces/interface'
 import { AxiosInstance } from '@/components/helpers/constants/instance'
 import { Notification } from '@/components/ui/notification'
+import { errorMessage } from '@/components/helpers/error-message'
 
 interface State {
 	createTestError: string
@@ -35,9 +36,8 @@ export const useCreateTestStore = create<State & Actions>(set => ({
 				Notification('Тест успешно создан!', 'green')
 			})
 			.catch(error => {
-				const errorMessage = error.response?.data?.error || 'Произошла ошибка'
-				set({ test: { name: '', questions: [] }, createTestError: errorMessage })
-				Notification(errorMessage, 'red')
+				set({ test: { name: '', questions: [] }, createTestError: errorMessage(error) })
+				Notification(errorMessage(error), 'red')
 			})
 	},
 	createQuestion: (question: Question) => {

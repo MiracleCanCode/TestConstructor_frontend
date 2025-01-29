@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { AxiosInstance } from '../helpers/constants/instance'
 import { Notification } from '../ui'
 import { User } from '../helpers/interfaces/interface'
+import { errorMessage } from '../helpers/error-message'
 
 interface State {
 	loading: boolean
@@ -36,8 +37,7 @@ export const useUserStore = create<State & Actions>(set => ({
 					}
 				})
 				.catch(err => {
-					const errorMessage = err.response?.data?.error || 'Ошибка при получении данных пользователя'
-					Notification(errorMessage, 'red')
+					Notification(errorMessage(err), 'red')
 				})
 		}
 	},
@@ -54,13 +54,21 @@ export const useUserStore = create<State & Actions>(set => ({
 				Notification('Вы успешно обновили свои данные', 'green')
 			})
 			.catch(err => {
-				const errorMessage = err.response?.data?.error || 'Ошибка при обновлении данных пользователя'
-				Notification(errorMessage, 'red')
+				Notification(errorMessage(err), 'red')
 			})
 	},
 	logout: () => {
-		Notification('Вы успешно вышли из аккаунта!', 'green')
-		location.reload()
+		AxiosInstance.get('/auth/logout')
+			.then(() => {
+				Notification('Вы успешно вышли из аккаунта!', 'green')
+				set({
+					loading: false
+				})
+				window.location.reload()
+			})
+			.catch(err => {
+				Notification(errorMessage(err), 'red')
+			})
 	},
 	getUserByLogin: (login: string) => {
 		AxiosInstance.post('/user/getByLogin', {
@@ -68,8 +76,7 @@ export const useUserStore = create<State & Actions>(set => ({
 		})
 			.then(res => set({ user: res.data, loading: false }))
 			.catch(err => {
-				const errorMessage = err.response?.data?.error || 'Ошибка при получении пользователя по логину'
-				Notification(errorMessage, 'red')
+				Notification(errorMessage(err), 'red')
 			})
 	}
 }))

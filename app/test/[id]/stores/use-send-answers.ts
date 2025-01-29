@@ -2,6 +2,7 @@ import { AxiosInstance } from '@/components/helpers/constants/instance'
 import { Test } from '@/components/helpers/interfaces/interface'
 import { create } from 'zustand'
 import { Notification } from '@/components/ui'
+import { errorMessage } from '@/components/helpers/error-message'
 
 interface State {
 	points: number
@@ -37,12 +38,8 @@ export const useSendAnswers = create<State & Actions>(set => ({
 			const res = await AxiosInstance.post('/test/validate', { test: testWithAnswers })
 			set({ points: res.data.success })
 		} catch (error) {
-			if (error instanceof Error) {
-				const errorMessage = error.message
-				Notification(errorMessage, 'red')
-			} else {
-				Notification('Неизвестная ошибка.', 'red')
-			}
+			Notification(errorMessage(error || ''), 'red')
+
 			set({ loader: false })
 		} finally {
 			set({ loader: false })

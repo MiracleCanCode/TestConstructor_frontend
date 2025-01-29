@@ -3,6 +3,7 @@ import { create } from 'zustand'
 import { AxiosInstance } from '../helpers/constants/instance'
 import { Notification } from '../ui'
 import { Test } from '../helpers/interfaces/interface'
+import { errorMessage } from '../helpers/error-message'
 
 interface State {
 	tests: Test[]
@@ -27,8 +28,7 @@ export const useTestManager = create<State & Actions>(set => ({
 			})
 				.then(res => set({ tests: res.data.tests, loading: false }))
 				.catch(error => {
-					const errorMessage = error.response?.data?.error || 'Ошибка при загрузке тестов'
-					Notification(errorMessage, 'red')
+					Notification(errorMessage(error), 'red')
 					set({ loading: false })
 				})
 		}
@@ -42,8 +42,7 @@ export const useTestManager = create<State & Actions>(set => ({
 				}))
 			})
 			.catch(error => {
-				const errorMessage = error.response?.data?.error || 'Ошибка при удалении теста'
-				Notification(errorMessage, 'red')
+				Notification(errorMessage(error), 'red')
 				set({ loading: false })
 			})
 	},
@@ -58,8 +57,7 @@ export const useTestManager = create<State & Actions>(set => ({
 				}))
 			})
 			.catch(error => {
-				const errorMessage = error.response?.data?.error || 'Ошибка при изменении статуса теста'
-				Notification(errorMessage, 'red')
+				Notification(errorMessage(error), 'red')
 			})
 	}
 }))
