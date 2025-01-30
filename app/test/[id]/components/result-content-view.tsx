@@ -11,7 +11,7 @@ interface Props {
 	loading: boolean
 }
 
-export const ResultPage: FC<Props> = ({ points, loading, resetAnswers }) => {
+export const ResultContentView: FC<Props> = ({ points, loading, resetAnswers }) => {
 	const fireworksProps = {
 		numberOfParticles: 150,
 		colors: ['#ff0000', '#00ff00', '#0000ff'],
@@ -42,3 +42,5 @@ export const ResultPage: FC<Props> = ({ points, loading, resetAnswers }) => {
 		</Container>
 	)
 }
+
+ResultContentView.displayName = 'ResultContentViewComponent'

@@ -2,8 +2,8 @@
 import { useGetTestById } from './stores/use-get-test-by-id'
 import { useParams } from 'next/navigation'
 import { FC, useEffect } from 'react'
-import { ForUsers } from './components/for-users'
-import { ForCreator } from './components/for-creator'
+import { UserContentView } from './components/users-content-view'
+import { AuthorContentView } from './components/author-content-view'
 import { CustomLoader } from '@/components/ui/custom-loader'
 
 const TestPage: FC = () => {
@@ -18,10 +18,10 @@ const TestPage: FC = () => {
 		return <CustomLoader />
 	}
 	if (test.user_role === 'owner') {
-		return <ForCreator test={test} />
+		return <AuthorContentView test={test} />
 	}
 
-	return <ForUsers />
+	return <UserContentView />
 }
 
 TestPage.displayName = 'TestPage'

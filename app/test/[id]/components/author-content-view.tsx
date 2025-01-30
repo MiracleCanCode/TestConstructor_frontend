@@ -5,7 +5,7 @@ import { Badge, Container, Flex, Title } from '@mantine/core'
 import { FC, useMemo, useState } from 'react'
 import { Button } from './button'
 
-export const ForCreator: FC<{ test: Test }> = ({ test }) => {
+export const AuthorContentView: FC<{ test: Test }> = ({ test }) => {
 	const { deleteTest, changeActive } = useTestManager()
 	const [isActive, setIsActive] = useState<boolean>(test.is_active ?? false)
 	const activeStatusBadgeText = useMemo(() => (isActive ? 'Активен' : 'Не активен'), [isActive])
@@ -38,3 +38,5 @@ export const ForCreator: FC<{ test: Test }> = ({ test }) => {
 		</Container>
 	)
 }
+
+AuthorContentView.displayName = 'AuthorContentViewComponent'

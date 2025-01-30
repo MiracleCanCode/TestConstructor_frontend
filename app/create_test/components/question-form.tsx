@@ -3,7 +3,7 @@
 import { Divider, Flex, Text, Textarea, TextInput } from '@mantine/core'
 import { FC, useMemo, useState } from 'react'
 import { CustomButton } from '@/components/ui/custom-button'
-import { VariantEntity } from '@/components/ui/variant-entity'
+import { VariantCard } from '@/components/ui/variant-card'
 import { useForm } from '@mantine/form'
 import { CustomErrorNotification } from '@/components/helpers/custom-notification-error'
 import { VariantForm } from './variant-form'
@@ -73,15 +73,14 @@ export const QuestionForm: FC = () => {
 				</Flex>
 			</form>
 			<Divider mt={20} />
-			<Text mt={20}>Варианты ответа</Text>
+			<VariantForm variantNumber={variantNumber} save={addVariant} />
+			{temporaryVariants.length >= 1 && <Text mt={20}>Варианты ответа</Text>}
 			{temporaryVariants.length >= 1 &&
 				temporaryVariants.map((v, idx) => (
 					<div key={idx} className=' mb-3'>
-						<VariantEntity name={v.name} isCorrect={v.is_correct} index={idx + 1} />
+						<VariantCard name={v.name} isCorrect={v.is_correct} index={idx + 1} />
 					</div>
 				))}
-
-			<VariantForm variantNumber={variantNumber} save={addVariant} />
 		</div>
 	)
 }

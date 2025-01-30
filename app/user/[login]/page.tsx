@@ -11,6 +11,7 @@ import { FC, useEffect, useMemo, useState } from 'react'
 const UserPage: FC = () => {
 	const { user, updateUserData, logout, getUserByLogin, loading } = useUserStore()
 	const [isUpdateData, setIsUpdateData] = useState(false)
+	const { name, email, password, avatar } = user
 	const [updateData, setUpdateData] = useState<User>({
 		name: user.name,
 		login: user.login,
@@ -25,13 +26,13 @@ const UserPage: FC = () => {
 	useEffect(() => {
 		getUserByLogin(login as string)
 		setUpdateData({
-			name: user.name,
+			name: name,
 			login: user.login,
-			email: user.email,
-			password: user.password,
-			avatar: user.avatar
+			email: email,
+			password: password,
+			avatar: avatar
 		})
-	}, [getUserByLogin, login, user.avatar, user.email, user.login, user.name, user.password])
+	}, [getUserByLogin, login, avatar, email, user.login, name, password])
 
 	const handleUpdate = () => {
 		if (updateData) {
@@ -40,11 +41,10 @@ const UserPage: FC = () => {
 		setIsUpdateData(false)
 	}
 
-	const isValid = updateData.name != user.name && updateData.login != user.name && updateData.email != user.name
+	const isValid = updateData.name != name && updateData.login != user.login && updateData.email != email
 
-	if (loading) {
-		return <CustomLoader />
-	}
+	if (loading) return <CustomLoader />
+
 	return (
 		<Flex justify='center' align='center' h='80vh'>
 			<Flex direction='column' gap={5}>

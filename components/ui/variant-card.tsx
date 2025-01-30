@@ -12,7 +12,7 @@ interface Props extends PaperProps {
 	onClick?: () => void
 }
 
-export const VariantEntity: FC<Props> = ({
+export const VariantCard: FC<Props> = ({
 	name,
 	index,
 	isCorrect,
@@ -43,4 +43,4 @@ export const VariantEntity: FC<Props> = ({
 	)
 }
 
-VariantEntity.displayName = 'VariantEntity'
+VariantCard.displayName = 'VariantCardComponent'

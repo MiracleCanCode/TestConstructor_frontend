@@ -39,7 +39,6 @@ export const useSendAnswers = create<State & Actions>(set => ({
 			set({ points: res.data.success })
 		} catch (error) {
 			Notification(errorMessage(error || ''), 'red')
-
 			set({ loader: false })
 		} finally {
 			set({ loader: false })

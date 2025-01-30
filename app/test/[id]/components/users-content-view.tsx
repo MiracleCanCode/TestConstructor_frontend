@@ -1,17 +1,17 @@
 import { CustomButton } from '@/components/ui'
-import { VariantEntity } from '@/components/ui/variant-entity'
+import { VariantCard } from '@/components/ui/variant-card'
 import { Container, Divider, Flex, Title } from '@mantine/core'
-import { TestSkeleton } from './test-skeleton'
-import { useState } from 'react'
+import { FC, useState } from 'react'
 import { useSendAnswers } from '../stores/use-send-answers'
 import { useGetTestById } from '../stores/use-get-test-by-id'
-import { ResultPage } from './result-page'
+import { ResultContentView } from './result-content-view'
+import { CustomLoader } from '@/components/ui/custom-loader'
 
 interface SelectedAnswers {
 	[questionId: number]: number
 }
 
-export const ForUsers = () => {
+export const UserContentView: FC = () => {
 	const [selectedAnswers, setSelectedAnswers] = useState<SelectedAnswers>({})
 	const { test, loading } = useGetTestById()
 	const { sendAnswers, points, loader } = useSendAnswers()
@@ -27,15 +27,11 @@ export const ForUsers = () => {
 	const completeTest = () => {
 		if (test) {
 			sendAnswers(selectedAnswers, test)
-		} else {
-			console.error('Test data is not loaded.')
 		}
 		setIsTestCompleted(true)
 	}
 
-	if (loading) {
-		return <TestSkeleton />
-	}
+	if (loading) return <CustomLoader />
 
 	const resetAnswers = () => {
 		setIsTestCompleted(false)
@@ -43,9 +39,7 @@ export const ForUsers = () => {
 	}
 
 	if (points && isTestCompleted) {
-		const result = Math.trunc(points)
-
-		return <ResultPage loading={loader} points={result} resetAnswers={resetAnswers} />
+		return <ResultContentView loading={loader} points={Math.trunc(points)} resetAnswers={resetAnswers} />
 	}
 
 	return (
@@ -62,7 +56,7 @@ export const ForUsers = () => {
 							const isSelected = selectedAnswers[question.ID || 0] === variant.ID || 0
 							return (
 								<div key={variantIdx} className=' mb-3'>
-									<VariantEntity
+									<VariantCard
 										style={{
 											cursor: 'pointer',
 											borderColor: isSelected ? '#38a169' : undefined,
@@ -85,3 +79,5 @@ export const ForUsers = () => {
 		</Container>
 	)
 }
+
+UserContentView.displayName = 'UserContentViewComponent'

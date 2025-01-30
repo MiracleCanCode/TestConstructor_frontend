@@ -9,7 +9,7 @@ import { useForm } from '@mantine/form'
 import { CustomErrorNotification } from '@/components/helpers/custom-notification-error'
 import { QuestionForm } from './question-form'
 import { useCreateTestStore } from '../stores/use-create-test-store'
-import { QuestionEntity } from './question-entity'
+import { QuestionCard } from './question-card'
 import { useViewportSize } from '@mantine/hooks'
 import { useGetToken } from '@/components/hooks/use-get-token'
 
@@ -93,7 +93,7 @@ export const TestForm: FC = () => {
 					test.questions.length > 0 &&
 					test.questions.map((question, idx) => (
 						<div key={idx} className='mt-3'>
-							<QuestionEntity name={question.name} questionIndex={idx + 1} variants={question.variants} />
+							<QuestionCard name={question.name} questionIndex={idx + 1} variants={question.variants} />
 						</div>
 					))}
 
