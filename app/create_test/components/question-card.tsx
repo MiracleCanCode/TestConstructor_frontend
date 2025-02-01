@@ -2,6 +2,7 @@ import { Paper, Text } from '@mantine/core'
 import { FC } from 'react'
 import { VariantCard } from '@/components/ui/variant-card'
 import { Variant } from '@/components/helpers/interfaces/interface'
+import { DeleteButton } from '@/components/ui/delete-button'
 
 interface Props {
 	name: string
@@ -9,9 +10,10 @@ interface Props {
 	variants: Variant[]
 	questionIndex: number
 	forSolve?: boolean
+	deleteAction: () => void
 }
 
-export const QuestionCard: FC<Props> = ({ name, description, variants, questionIndex, forSolve }) => (
+export const QuestionCard: FC<Props> = ({ name, description, variants, questionIndex, forSolve, deleteAction }) => (
 	<Paper shadow='xs' withBorder p='md'>
 		<Text>
 			Вопрос {questionIndex}. {name}
@@ -23,6 +25,9 @@ export const QuestionCard: FC<Props> = ({ name, description, variants, questionI
 					<VariantCard index={idx + 1} name={v.name} isCorrect={v.is_correct} solve={forSolve} />
 				</div>
 			))}
+		<DeleteButton variant='subtle' onClick={deleteAction}>
+			Удалить вопрос
+		</DeleteButton>
 	</Paper>
 )
 

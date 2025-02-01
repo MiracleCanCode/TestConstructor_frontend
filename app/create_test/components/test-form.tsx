@@ -1,6 +1,6 @@
 'use client'
 
-import { Flex, Modal, Text, Textarea, TextInput } from '@mantine/core'
+import { Flex, Group, Modal, Text, Textarea, TextInput } from '@mantine/core'
 import { FC, useMemo, useState } from 'react'
 
 import { CustomButton } from '@/components/ui/custom-button'
@@ -11,15 +11,14 @@ import { QuestionForm } from './question-form'
 import { useCreateTestStore } from '../stores/use-create-test-store'
 import { QuestionCard } from './question-card'
 import { useViewportSize } from '@mantine/hooks'
-import { useGetToken } from '@/components/hooks/use-get-token'
 
 export const TestForm: FC = () => {
-	const { test, createTest, clearTest } = useCreateTestStore()
+	const { test, createTest, clearTest, deleteQuestion } = useCreateTestStore()
 	const [openCreateQuestionModal, setOpenCreateQuestionModal] = useState<boolean>(false)
 	const isCreateTestButtonDisabled = test.questions?.length < 2
 	const { width } = useViewportSize()
 	const formSize = useMemo(() => (width <= 800 ? 'w-full' : 'w-700'), [width])
-	const { token } = useGetToken()
+	// const [oneQuestionOneAnswer, setOneQuestionOneAnswer] = useState<boolean>(false)
 
 	const form = useForm({
 		mode: 'controlled',
@@ -40,14 +39,11 @@ export const TestForm: FC = () => {
 			return
 		}
 
-		createTest(
-			{
-				name,
-				description,
-				questions: test.questions
-			},
-			token || ''
-		)
+		createTest({
+			name,
+			description,
+			questions: test.questions
+		})
 
 		form.reset()
 	}
@@ -68,17 +64,14 @@ export const TestForm: FC = () => {
 
 						<Textarea label='Введите описание' mt={10} {...form.getInputProps('description')} />
 
-						<CustomButton mt={20} type='submit' disabled={isCreateTestButtonDisabled}>
-							Создать тест
-						</CustomButton>
-
-						<CustomButton ml={20} mt={20} type='button' variant='subtle'>
-							Сохранить тест
-						</CustomButton>
-
-						<CustomButton mt={20} color='red' ml={20} variant='subtle' onClick={clear}>
-							Стереть тест
-						</CustomButton>
+						<Group>
+							<CustomButton mt={20} type='submit' disabled={isCreateTestButtonDisabled}>
+								Создать тест
+							</CustomButton>
+							<CustomButton mt={20} color='red' ml={20} variant='subtle' onClick={clear}>
+								Стереть тест
+							</CustomButton>
+						</Group>
 					</form>
 				</div>
 
@@ -93,7 +86,12 @@ export const TestForm: FC = () => {
 					test.questions.length > 0 &&
 					test.questions.map((question, idx) => (
 						<div key={idx} className='mt-3'>
-							<QuestionCard name={question.name} questionIndex={idx + 1} variants={question.variants} />
+							<QuestionCard
+								deleteAction={() => deleteQuestion(question)}
+								name={question.name}
+								questionIndex={idx + 1}
+								variants={question.variants}
+							/>
 						</div>
 					))}
 

@@ -20,6 +20,7 @@ export interface Test {
 	is_active?: boolean
 	user_role?: string
 	count_user_past?: number
+	one_question_one_answer?: boolean
 }
 
 export interface User {

@@ -1,11 +1,10 @@
 import { FC } from 'react'
-import { Paper, PaperProps, Switch, Text } from '@mantine/core'
+import { Checkbox, CheckboxCardProps, Group, Text } from '@mantine/core'
 
-interface Props extends PaperProps {
+interface Props extends CheckboxCardProps {
 	name: string
 	index: number
 	isCorrect?: boolean
-	key?: number
 	solve?: boolean
 	setIsCorrect?: () => void
 	checked?: boolean
@@ -16,7 +15,6 @@ export const VariantCard: FC<Props> = ({
 	name,
 	index,
 	isCorrect,
-	key,
 	solve = false,
 	setIsCorrect,
 	onClick,
@@ -24,22 +22,24 @@ export const VariantCard: FC<Props> = ({
 	...props
 }) => {
 	return (
-		<Paper
-			style={props.style}
-			classNames={classNames}
-			key={key}
-			shadow='xs'
-			withBorder
-			p='md'
-			className={props.className}
+		<Checkbox.Card
+			p={10}
+			radius='md'
+			checked={isCorrect}
 			onClick={onClick}
+			onChange={setIsCorrect}
+			className={props.className}
+			classNames={classNames}
+			disabled={!solve}
 		>
-			<Text>Вариант {index}</Text>
-			<Text size='xl'>{name}</Text>
-			{!solve && (
-				<Switch onChange={setIsCorrect} label='Правильный вариант' checked={isCorrect} disabled mt={10} />
-			)}
-		</Paper>
+			<Group>
+				<Checkbox.Indicator />
+				<div>
+					<Text>Вариант {index}</Text>
+					<Text size='xl'>{name}</Text>
+				</div>
+			</Group>
+		</Checkbox.Card>
 	)
 }
 

@@ -11,10 +11,10 @@ interface State {
 }
 
 interface Actions {
-	createTest: (test: Test, token: string) => void
+	createTest: (test: Test) => void
 	createQuestion: (question: Question) => void
 	clearTest: () => void
-	clearError: () => void
+	deleteQuestion: (question: Question) => void
 }
 
 export const useCreateTestStore = create<State & Actions>(set => ({
@@ -23,13 +23,7 @@ export const useCreateTestStore = create<State & Actions>(set => ({
 		name: '',
 		questions: []
 	},
-	createTest: (testCreate: Test, token: string) => {
-		if (!token) {
-			set({ createTestError: 'Токен отсутствует. Тест не будет сохранен.' })
-			Notification('Токен отсутствует. Тест не будет сохранен.', 'red')
-			return
-		}
-
+	createTest: (testCreate: Test) => {
 		AxiosInstance.post('/test/create', testCreate)
 			.then(res => {
 				set({ test: res.data, createTestError: '' })
@@ -49,5 +43,13 @@ export const useCreateTestStore = create<State & Actions>(set => ({
 		}))
 	},
 	clearTest: () => set(() => ({ test: { name: '', questions: [] } })),
-	clearError: () => set({ createTestError: '' })
+	deleteQuestion: (question: Question) => {
+		console.log(question)
+		set(state => ({
+			test: {
+				...state.test,
+				questions: state.test.questions.filter(q => q !== question)
+			}
+		}))
+	}
 }))
