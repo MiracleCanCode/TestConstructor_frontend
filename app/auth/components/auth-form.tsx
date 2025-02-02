@@ -4,7 +4,7 @@ import { CustomButton } from '@/components/ui'
 import { PasswordInput, TextInput, Title } from '@mantine/core'
 import { useAuthStore } from '@/app/auth/stores/use-auth-store'
 import { useForm } from '@mantine/form'
-import { FC, useMemo } from 'react'
+import { FC, useCallback, useMemo } from 'react'
 import { validateField } from '../helpers/validate-fields'
 
 export type AuthState = 'login' | 'registration'
@@ -28,7 +28,7 @@ export const AuthForm: FC<{ mode: AuthState; switchMode: () => void }> = ({ mode
 	})
 
 	const { name, email, password, login } = form.getValues()
-	const submit = () => {
+	const submit = useCallback(() => {
 		const user = { name, email, password, login }
 
 		if (isRegistrationMode) {
@@ -39,13 +39,13 @@ export const AuthForm: FC<{ mode: AuthState; switchMode: () => void }> = ({ mode
 			return
 		}
 
-		auth.auth(user)
-	}
+		auth.auth(user, () => window.location.reload())
+	}, [auth, email, form, isRegistrationMode, login, name, password, switchMode])
 
-	const toggleMode = () => {
+	const toggleMode = useCallback(() => {
 		switchMode()
 		form.reset()
-	}
+	}, [form, switchMode])
 
 	return (
 		<div className='w-96'>

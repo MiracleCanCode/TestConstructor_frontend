@@ -8,7 +8,7 @@ export const IsAuthContent: FC = () => {
 
 	return (
 		<Flex justify='flex-end'>
-			<Link href={`/user/${user.login}`}>
+			<Link href={`/profile`}>
 				<Avatar src={user.avatar ?? ''} />
 			</Link>
 		</Flex>

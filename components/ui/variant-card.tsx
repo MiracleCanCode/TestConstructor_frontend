@@ -36,7 +36,9 @@ export const VariantCard: FC<Props> = ({
 				<Checkbox.Indicator />
 				<div>
 					<Text>Вариант {index}</Text>
-					<Text size='xl'>{name}</Text>
+					<Text size='xl' truncate='end' w={300}>
+						{name}
+					</Text>
 				</div>
 			</Group>
 		</Checkbox.Card>

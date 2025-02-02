@@ -3,6 +3,7 @@ import { AxiosInstance } from '../helpers/constants/instance'
 import { Notification } from '../ui'
 import { User } from '../helpers/interfaces/interface'
 import { errorMessage } from '../helpers/error-message'
+import Cookies from 'js-cookie'
 
 interface State {
 	loading: boolean
@@ -58,17 +59,8 @@ export const useUserStore = create<State & Actions>(set => ({
 			})
 	},
 	logout: () => {
-		AxiosInstance.get('/auth/logout')
-			.then(() => {
-				Notification('Вы успешно вышли из аккаунта!', 'green')
-				set({
-					loading: false
-				})
-				window.location.reload()
-			})
-			.catch(err => {
-				Notification(errorMessage(err), 'red')
-			})
+		Cookies.remove('token')
+		window.location.reload()
 	},
 	getUserByLogin: (login: string) => {
 		AxiosInstance.post('/user/getByLogin', {

@@ -3,26 +3,25 @@ import { ActionIcon, Container, Divider, Flex, useComputedColorScheme, useMantin
 import { FC, useEffect, useMemo, useState } from 'react'
 import { CustomButton, CustomTooltip } from '../ui'
 import Link from 'next/link'
-import { usePathname, useParams } from 'next/navigation'
-import { useGetToken } from '../hooks/use-get-token'
+import { usePathname } from 'next/navigation'
 import { useUserStore } from '../stores/use-user-store'
-import { FaArrowLeft } from 'react-icons/fa'
+import { FaHome } from 'react-icons/fa'
 import { FiMoon } from 'react-icons/fi'
 import { FiSun } from 'react-icons/fi'
 import { FiPlus } from 'react-icons/fi'
 import { IsAuthContent } from './components/auth-content'
 import { DontAuthContent } from './components/not-auth-content'
+import { useAccessToken } from '../hooks/use-access-token'
 
 export const Header: FC = () => {
 	const [isVisible, setIsVisible] = useState(true)
 	const [showBackButton, setShowBackButton] = useState(false)
 	const pathname = usePathname()
-	const params = useParams()
 	const { setColorScheme } = useMantineColorScheme()
 	const computedColorScheme = useComputedColorScheme('light', {
 		getInitialValueInEffect: true
 	})
-	const { token } = useGetToken()
+	const { token } = useAccessToken()
 	const { getUserData } = useUserStore()
 	const iconColor = useMemo(() => (computedColorScheme === 'light' ? 'black' : 'white'), [computedColorScheme])
 	const labelForChangeTheme = useMemo(
@@ -30,10 +29,10 @@ export const Header: FC = () => {
 		[computedColorScheme]
 	)
 	const content = useMemo(
-		() => (token ? pathname === `/user/${params.login}` ? null : <IsAuthContent /> : <DontAuthContent />),
-		[token]
+		() => (token ? pathname === '/profile' ? null : <IsAuthContent /> : <DontAuthContent />),
+		[pathname, token]
 	)
-	const isMainPage = useMemo(() => token && pathname !== `/user/${params.login}`, [token, pathname, params.login])
+	const isMainPage = useMemo(() => token && pathname !== '/profile', [token, pathname])
 
 	useEffect(() => {
 		if (token) getUserData(token)
@@ -51,7 +50,7 @@ export const Header: FC = () => {
 					{showBackButton && (
 						<Link href='/dashboard'>
 							<CustomButton variant='subtle'>
-								<FaArrowLeft className='mr-3' /> На главную
+								<FaHome className='mr-3' /> На главную
 							</CustomButton>
 						</Link>
 					)}

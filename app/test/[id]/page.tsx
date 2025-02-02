@@ -14,7 +14,7 @@ const TestPage: FC = () => {
 		getTestById(Number(id))
 	}, [getTestById, id])
 
-	if (loading) {
+	if (loading && !test) {
 		return <CustomLoader />
 	}
 	if (test.user_role === 'owner') {

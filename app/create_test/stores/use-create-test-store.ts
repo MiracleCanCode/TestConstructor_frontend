@@ -38,13 +38,12 @@ export const useCreateTestStore = create<State & Actions>(set => ({
 		set(state => ({
 			test: {
 				...state.test,
-				questions: [...state.test.questions, question]
+				questions: Array.isArray(state.test.questions) ? [...state.test.questions, question] : [question]
 			}
 		}))
 	},
 	clearTest: () => set(() => ({ test: { name: '', questions: [] } })),
 	deleteQuestion: (question: Question) => {
-		console.log(question)
 		set(state => ({
 			test: {
 				...state.test,

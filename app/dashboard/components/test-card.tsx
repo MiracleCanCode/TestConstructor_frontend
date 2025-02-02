@@ -1,11 +1,11 @@
-import { FC, useMemo, useState } from 'react'
+import { FC, memo, useCallback, useMemo, useState } from 'react'
 import { CiPause1, CiPlay1 } from 'react-icons/ci'
 import { useTestManager } from '@/components/stores/use-test-manager'
 import { useViewportSize } from '@mantine/hooks'
 import { TestView } from './test-view'
 import { TestCardProps } from './helpers/interface'
 
-export const TestCard: FC<TestCardProps> = ({ name, description, id, active }) => {
+export const TestCard: FC<TestCardProps> = memo(({ name, description, id, active }) => {
 	const { width } = useViewportSize()
 	const { deleteTest, changeActive } = useTestManager()
 	const [isActive, setIsActive] = useState<boolean>(active)
@@ -16,16 +16,16 @@ export const TestCard: FC<TestCardProps> = ({ name, description, id, active }) =
 	)
 	const actionName = useMemo(() => (isActive ? 'Выключить' : 'Включить'), [isActive])
 	const activeBadgeText = useMemo(() => (isActive ? 'Активен' : 'Не активен'), [isActive])
-	const testURL = window.location.host + `/test/${id}`
+	const testURL = useMemo(() => window.location.host + `/test/${id}`, [id])
 
-	const DeleteTestAction = () => {
+	const DeleteTestAction = useCallback(() => {
 		deleteTest(id)
-	}
+	}, [deleteTest])
 
-	const ChangeActiveAction = () => {
+	const ChangeActiveAction = useCallback(() => {
 		setIsActive(!isActive)
 		changeActive(id, !isActive)
-	}
+	}, [changeActive, id, isActive])
 	return (
 		<TestView
 			name={name}
@@ -42,4 +42,6 @@ export const TestCard: FC<TestCardProps> = ({ name, description, id, active }) =
 			activeBadgeText={activeBadgeText}
 		/>
 	)
-}
+})
+
+TestCard.displayName = 'TestCardComponent'

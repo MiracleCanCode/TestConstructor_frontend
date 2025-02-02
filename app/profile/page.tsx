@@ -5,54 +5,56 @@ import { CustomButton } from '@/components/ui'
 import { CustomLoader } from '@/components/ui/custom-loader'
 import { Avatar, Flex, TextInput } from '@mantine/core'
 import { useViewportSize } from '@mantine/hooks'
-import { useParams } from 'next/navigation'
-import { FC, useEffect, useMemo, useState } from 'react'
+import { FC, useEffect, useState, useCallback, useMemo } from 'react'
 
 const UserPage: FC = () => {
-	const { user, updateUserData, logout, getUserByLogin, loading } = useUserStore()
+	const { user, updateUserData, logout, loading } = useUserStore()
 	const [isUpdateData, setIsUpdateData] = useState(false)
-	const { name, email, password, avatar } = user
 	const [updateData, setUpdateData] = useState<User>({
 		name: user.name,
 		login: user.login,
 		email: user.email,
 		password: '',
-		avatar: ''
+		avatar: user.avatar || ''
 	})
-	const { login } = useParams()
 	const { width } = useViewportSize()
 	const inputSize = useMemo(() => (width <= 426 ? '100%' : 400), [width])
 
 	useEffect(() => {
-		getUserByLogin(login as string)
 		setUpdateData({
-			name: name,
+			name: user.name,
 			login: user.login,
-			email: email,
-			password: password,
-			avatar: avatar
+			email: user.email,
+			password: '',
+			avatar: user.avatar || ''
 		})
-	}, [getUserByLogin, login, avatar, email, user.login, name, password])
+	}, [user])
 
-	const handleUpdate = () => {
-		if (updateData) {
+	const handleUpdate = useCallback(() => {
+		if (updateData && updateData.name !== user.name) {
 			updateUserData(updateData, user.login)
+			setIsUpdateData(false)
 		}
-		setIsUpdateData(false)
-	}
+	}, [updateData, user, updateUserData])
 
-	const isValid = updateData.name != name && updateData.login != user.login && updateData.email != email
+	const handleNameChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+		setUpdateData(prevData => ({
+			...prevData,
+			name: event.target.value
+		}))
+	}, [])
 
-	if (loading) return <CustomLoader />
+	const isValid = updateData && updateData.name !== user.name
+
+	if (loading || !updateData) return <CustomLoader />
 
 	return (
 		<Flex justify='center' align='center' h='80vh'>
 			<Flex direction='column' gap={5}>
 				<Avatar src={user.avatar || ''} w={100} h={100} mb={20} className='block m-auto' />
-
 				<TextInput
 					value={updateData.name}
-					onChange={e => setUpdateData({ ...updateData, name: e.currentTarget.value })}
+					onChange={handleNameChange}
 					label='Ваше имя'
 					disabled={!isUpdateData}
 					w={inputSize}

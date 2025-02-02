@@ -1,5 +1,4 @@
-import { FC } from 'react'
-
+import { FC, useCallback } from 'react'
 import { useForm } from '@mantine/form'
 import { Switch, TextInput, Text } from '@mantine/core'
 import { CustomButton } from '@/components/ui/custom-button'
@@ -24,13 +23,13 @@ export const VariantForm: FC<{
 		}
 	})
 
-	const submit = () => {
+	const submit = useCallback(() => {
 		save({
 			name: form.values.name,
 			is_correct: form.values.isCorrect
 		})
 		form.reset()
-	}
+	}, [form, save])
 
 	return (
 		<div className='mt-3'>
@@ -52,4 +51,4 @@ export const VariantForm: FC<{
 	)
 }
 
-VariantForm.displayName = 'TestVariantForm'
+VariantForm.displayName = 'VariantForm'

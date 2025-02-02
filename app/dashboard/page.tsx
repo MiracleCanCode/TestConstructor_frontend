@@ -3,11 +3,12 @@ import { useTestManager } from '@/components/stores/use-test-manager'
 import { useUserStore } from '@/components/stores/use-user-store'
 import { CustomButton } from '@/components/ui'
 import { TestCard } from './components/test-card'
-import { Flex, Group, Select, Text, Title } from '@mantine/core'
+import { Flex, Group, Select } from '@mantine/core'
 import Link from 'next/link'
 import { FC, useEffect, useState } from 'react'
 import { CustomLoader } from '@/components/ui/custom-loader'
-import { useGetToken } from '@/components/hooks/use-get-token'
+import { useAccessToken } from '@/components/hooks/use-access-token'
+import { CustomTitle } from '@/components/ui/custom-title'
 
 const sortData = [
 	{
@@ -25,37 +26,48 @@ const sortData = [
 ]
 
 const Dashboard: FC = () => {
-	const { getTests, tests, loading, sortTests, count } = useTestManager()
+	const { getTests, tests, loading, sortTests, count, originalTests } = useTestManager()
 	const [value, setValue] = useState<string | null>('')
+
 	const { user } = useUserStore()
-	const { token } = useGetToken()
-	useEffect(() => {
-		getTests(user.id || 0, 0, 5, token || '')
-	}, [getTests, token, user.id])
+	const { token } = useAccessToken()
 
 	useEffect(() => {
-		sortTests(value ?? '')
-	}, [value])
+		if (user?.id && token) {
+			getTests(user.id, 0, 5, token)
+		}
+	}, [getTests, token, user?.id])
 
-	if (loading) return <CustomLoader />
-	if (count < 1) {
+	useEffect(() => {
+		sortTests(value || '')
+	}, [sortTests, value])
+
+	if (loading || !originalTests) return <CustomLoader />
+	if (count < 1 || !originalTests) {
 		return (
 			<Flex align='center' justify='center' h='80vh' w='100%'>
-				<Title size='xl'>
+				<CustomTitle size='xl'>
 					<Link href='/create_test'>
 						<CustomButton variant='subtle' size='xl'>
 							Создайте свой первый тест!
 						</CustomButton>
 					</Link>
-				</Title>
+				</CustomTitle>
 			</Flex>
 		)
 	}
+
 	return (
 		<Flex className=' mt-7' direction='column'>
 			<Group justify='space-between' w='100%'>
-				<Text size='xl'>Ваши тесты:</Text>
-				<Select placeholder='Сортировать' value={value} onChange={setValue} data={sortData} variant='filled' />
+				<CustomTitle size='xl'>Ваши тесты:</CustomTitle>
+				<Select
+					placeholder='Сортировать'
+					value={value}
+					onChange={setValue}
+					data={sortData}
+					variant='unstyled'
+				/>
 			</Group>
 			<div>
 				<Flex mt={20} gap={20} wrap='wrap'>

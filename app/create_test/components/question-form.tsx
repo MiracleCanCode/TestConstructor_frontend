@@ -1,7 +1,7 @@
 'use client'
 
 import { Divider, Flex, Text, Textarea, TextInput } from '@mantine/core'
-import { FC, useMemo, useState } from 'react'
+import { FC, useState, useMemo, useCallback } from 'react'
 import { CustomButton } from '@/components/ui/custom-button'
 import { VariantCard } from '@/components/ui/variant-card'
 import { useForm } from '@mantine/form'
@@ -13,18 +13,19 @@ import { useViewportSize } from '@mantine/hooks'
 
 export const QuestionForm: FC = () => {
 	const { createQuestion } = useCreateTestStore()
-
 	const [temporaryVariants, setTemporaryVariants] = useState<Variant[]>([])
 	const { width } = useViewportSize()
 	const formSize = useMemo(() => (width <= 1200 ? 'w-full' : 'w-96'), [width])
 
-	const variantNumber = useMemo(() => {
-		return temporaryVariants.length + 1
-	}, [temporaryVariants])
+	const variantNumber = temporaryVariants.length + 1
 
-	const addVariant = (variant: Variant) => {
-		setTemporaryVariants([...temporaryVariants, variant])
-	}
+	const addVariant = useCallback(
+		(variant: Variant) => {
+			setTemporaryVariants([...temporaryVariants, variant])
+		},
+		[temporaryVariants]
+	)
+
 	const form = useForm({
 		mode: 'controlled',
 		initialValues: {
@@ -38,13 +39,12 @@ export const QuestionForm: FC = () => {
 
 	const { name, description } = form.getValues()
 
-	const submit = () => {
+	const submit = useCallback(() => {
 		if (temporaryVariants.length < 2) {
 			CustomErrorNotification('Количество вариантов для ответа не может быть меньше 2х!')
 			return
 		}
-		let countIsCorrectVariants = 0
-		temporaryVariants.map(variant => (variant.is_correct === true ? countIsCorrectVariants++ : null))
+		const countIsCorrectVariants = temporaryVariants.filter(variant => variant.is_correct).length
 
 		if (countIsCorrectVariants < 1) {
 			CustomErrorNotification('Должен быть хотя бы один правильный вариант')
@@ -52,22 +52,28 @@ export const QuestionForm: FC = () => {
 		}
 
 		createQuestion({
-			name: name,
-			description: description,
+			name,
+			description,
 			variants: temporaryVariants
 		})
+
 		setTemporaryVariants([])
 		form.reset()
-	}
+	}, [temporaryVariants, name, description, createQuestion, form])
+
+	const clear = useCallback(() => {
+		setTemporaryVariants([])
+		form.reset()
+	}, [form])
 
 	return (
 		<div className={formSize}>
 			<form onSubmit={form.onSubmit(submit)}>
 				<TextInput label='Введите название вопроса' withAsterisk {...form.getInputProps('name')} />
-				<Textarea label='Введите описание вопроса' {...form.getInputProps('description')} />
+				<Textarea label='Введите описание вопроса' />
 				<Flex mt={20} gap={20}>
 					<CustomButton type='submit'>Создать</CustomButton>
-					<CustomButton color='red' variant='outline'>
+					<CustomButton color='red' variant='outline' onClick={clear}>
 						Очистить
 					</CustomButton>
 				</Flex>
