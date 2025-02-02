@@ -76,7 +76,7 @@ export const TestView: FC<Props> = memo(
 				{description}
 			</Text>
 
-			<Group mt='md' mb='xs'>
+			<Group mt={40}>
 				<CustomTooltip label={label} position='bottom'>
 					<CustomButton
 						w={140}

@@ -9,7 +9,7 @@ export const IsAuthContent: FC = () => {
 	return (
 		<Flex justify='flex-end'>
 			<Link href={`/profile`}>
-				<Avatar src={user.avatar ?? ''} />
+				<Avatar name={user.login} />
 			</Link>
 		</Flex>
 	)

@@ -51,7 +51,7 @@ const UserPage: FC = () => {
 	return (
 		<Flex justify='center' align='center' h='80vh'>
 			<Flex direction='column' gap={5}>
-				<Avatar src={user.avatar || ''} w={100} h={100} mb={20} className='block m-auto' />
+				<Avatar name={user.login} w={100} h={100} mb={20} className='block m-auto' />
 				<TextInput
 					value={updateData.name}
 					onChange={handleNameChange}

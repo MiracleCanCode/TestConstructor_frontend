@@ -2,7 +2,7 @@ import { Test } from '@/components/helpers/interfaces/interface'
 import { useTestManager } from '@/components/stores/use-test-manager'
 import { DeleteButton } from '@/components/ui/delete-button'
 import { Badge, Container, Flex, Title } from '@mantine/core'
-import { FC, useMemo, useState } from 'react'
+import { FC, useCallback, useMemo, useState } from 'react'
 import { Button } from './button'
 
 export const AuthorContentView: FC<{ test: Test }> = ({ test }) => {
@@ -11,10 +11,10 @@ export const AuthorContentView: FC<{ test: Test }> = ({ test }) => {
 	const activeStatusBadgeText = useMemo(() => (isActive ? 'Активен' : 'Не активен'), [isActive])
 	const activeStatusBadgeVariant = useMemo(() => (isActive ? 'filled' : 'outline'), [isActive])
 
-	const changeTestActive = () => {
+	const changeTestActive = useCallback(() => {
 		changeActive(test.ID || 0, !isActive || false)
 		setIsActive(!isActive)
-	}
+	}, [changeActive, isActive, test.ID])
 	return (
 		<Container>
 			<Flex direction='column' justify='center' h='80vh' wrap='wrap'>

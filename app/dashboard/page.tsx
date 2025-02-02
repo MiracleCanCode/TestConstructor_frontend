@@ -5,10 +5,11 @@ import { CustomButton } from '@/components/ui'
 import { TestCard } from './components/test-card'
 import { Flex, Group, Select } from '@mantine/core'
 import Link from 'next/link'
-import { FC, useEffect, useState } from 'react'
+import { FC, useEffect, useMemo, useState } from 'react'
 import { CustomLoader } from '@/components/ui/custom-loader'
 import { useAccessToken } from '@/components/hooks/use-access-token'
 import { CustomTitle } from '@/components/ui/custom-title'
+import { useViewportSize } from '@mantine/hooks'
 
 const sortData = [
 	{
@@ -31,6 +32,10 @@ const Dashboard: FC = () => {
 
 	const { user } = useUserStore()
 	const { token } = useAccessToken()
+	const { width } = useViewportSize()
+
+	const paddingSize = useMemo(() => (width <= 992 ? 0 : 50), [width])
+	const titleSize = useMemo(() => (width <= 992 ? 3 : 1), [width])
 
 	useEffect(() => {
 		if (user?.id && token) {
@@ -58,16 +63,12 @@ const Dashboard: FC = () => {
 	}
 
 	return (
-		<Flex className=' mt-7' direction='column'>
+		<Flex className=' mt-7' direction='column' p={paddingSize}>
 			<Group justify='space-between' w='100%'>
-				<CustomTitle size='xl'>Ваши тесты:</CustomTitle>
-				<Select
-					placeholder='Сортировать'
-					value={value}
-					onChange={setValue}
-					data={sortData}
-					variant='unstyled'
-				/>
+				<CustomTitle mb={20} order={titleSize}>
+					Ваши тесты:
+				</CustomTitle>
+				<Select placeholder='Сортировать' value={value} onChange={setValue} data={sortData} variant='default' />
 			</Group>
 			<div>
 				<Flex mt={20} gap={20} wrap='wrap'>

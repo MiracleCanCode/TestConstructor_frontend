@@ -26,6 +26,7 @@ export const TestCard: FC<TestCardProps> = memo(({ name, description, id, active
 		setIsActive(!isActive)
 		changeActive(id, !isActive)
 	}, [changeActive, id, isActive])
+
 	return (
 		<TestView
 			name={name}

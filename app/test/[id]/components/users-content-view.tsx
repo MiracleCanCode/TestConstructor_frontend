@@ -1,7 +1,7 @@
 import { CustomButton } from '@/components/ui'
 import { VariantCard } from '@/components/ui/variant-card'
 import { Container, Divider, Flex, Title } from '@mantine/core'
-import { FC, useState } from 'react'
+import { FC, useCallback, useState } from 'react'
 import { useSendAnswers } from '../stores/use-send-answers'
 import { useGetTestById } from '../stores/use-get-test-by-id'
 import { ResultContentView } from './result-content-view'
@@ -17,26 +17,26 @@ export const UserContentView: FC = () => {
 	const { sendAnswers, points, loader } = useSendAnswers()
 	const [isTestCompleted, setIsTestCompleted] = useState<boolean>(false)
 
-	const handleVariantClick = (questionId: number, variantId: number) => {
+	const handleVariantClick = useCallback((questionId: number, variantId: number) => {
 		setSelectedAnswers(prev => ({
 			...prev,
 			[questionId]: variantId
 		}))
-	}
+	}, [])
 
-	const completeTest = () => {
+	const completeTest = useCallback(() => {
 		if (test) {
 			sendAnswers(selectedAnswers, test)
 		}
 		setIsTestCompleted(true)
-	}
+	}, [selectedAnswers, sendAnswers, test])
 
-	if (loading) return <CustomLoader />
-
-	const resetAnswers = () => {
+	const resetAnswers = useCallback(() => {
 		setIsTestCompleted(false)
 		setSelectedAnswers([])
-	}
+	}, [])
+
+	if (loading) return <CustomLoader />
 
 	if (points && isTestCompleted) {
 		return <ResultContentView loading={loader} points={Math.trunc(points)} resetAnswers={resetAnswers} />
