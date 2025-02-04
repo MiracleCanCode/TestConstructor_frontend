@@ -3,8 +3,8 @@ import { User } from '@/components/helpers/interfaces/interface'
 import { useUserStore } from '@/components/stores/use-user-store'
 import { CustomButton } from '@/components/ui'
 import { CustomLoader } from '@/components/ui/custom-loader'
-import { Avatar, Flex, TextInput } from '@mantine/core'
-import { useViewportSize } from '@mantine/hooks'
+import { Avatar, Flex, Modal, TextInput } from '@mantine/core'
+import { useDisclosure, useViewportSize } from '@mantine/hooks'
 import { FC, useEffect, useState, useCallback, useMemo } from 'react'
 
 const UserPage: FC = () => {
@@ -19,6 +19,7 @@ const UserPage: FC = () => {
 	})
 	const { width } = useViewportSize()
 	const inputSize = useMemo(() => (width <= 426 ? '100%' : 400), [width])
+	const [openedExitModal, { open, close }] = useDisclosure(false)
 
 	useEffect(() => {
 		setUpdateData({
@@ -81,12 +82,25 @@ const UserPage: FC = () => {
 				>
 					{isUpdateData ? 'Подтвердить' : 'Изменить данные'}
 				</CustomButton>
+				<Modal
+					opened={openedExitModal}
+					onClose={close}
+					title='Вы действительно хотите выйти из аккаунта?'
+					centered
+				>
+					<CustomButton w='100%' onClick={logout}>
+						Да, я хочу выйти
+					</CustomButton>
+					<CustomButton w='100%' mt={10} variant='outline' onClick={close}>
+						Нет, я не хочу выйти
+					</CustomButton>
+				</Modal>
 				{isUpdateData ? (
 					<CustomButton mt={10} onClick={() => setIsUpdateData(false)} color='red' variant='subtle'>
 						Отмена
 					</CustomButton>
 				) : (
-					<CustomButton mt={10} variant='outline' onClick={logout}>
+					<CustomButton mt={10} variant='outline' onClick={open}>
 						Выйти из аккаунта
 					</CustomButton>
 				)}
