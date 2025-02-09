@@ -3,7 +3,6 @@ import { AxiosInstance } from '../helpers/constants/instance'
 import { Notification } from '../ui'
 import { User } from '../helpers/interfaces/interface'
 import { errorMessage } from '../helpers/error-message'
-import Cookies from 'js-cookie'
 
 interface State {
 	loading: boolean
@@ -12,7 +11,7 @@ interface State {
 
 interface Actions {
 	setUser: (user: User) => void
-	getUserData: (token: string) => void
+	getUserData: () => void
 	updateUserData: (user: User, userLogin: string) => void
 	logout: () => void
 	getUserByLogin: (login: string) => void
@@ -29,18 +28,16 @@ export const useUserStore = create<State & Actions>(set => ({
 		avatar: ''
 	},
 	setUser: (user: User) => set({ user }),
-	getUserData: (token: string) => {
-		if (token) {
-			AxiosInstance.get('/user/getData')
-				.then(res => {
-					if (res.data) {
-						set({ user: res.data, loading: false })
-					}
-				})
-				.catch(err => {
-					Notification(errorMessage(err), 'red')
-				})
-		}
+	getUserData: () => {
+		AxiosInstance.get('/user/getData')
+			.then(res => {
+				if (res.data) {
+					set({ user: res.data, loading: false })
+				}
+			})
+			.catch(err => {
+				Notification(errorMessage(err), 'red')
+			})
 	},
 	updateUserData: (user: User, userLogin: string) => {
 		AxiosInstance.post('/user/update', {
@@ -59,8 +56,19 @@ export const useUserStore = create<State & Actions>(set => ({
 			})
 	},
 	logout: () => {
-		Cookies.remove('token')
-		window.location.reload()
+		AxiosInstance.get('/user/logout')
+			.then(() =>
+				set({
+					user: {
+						name: '',
+						login: '',
+						id: 0,
+						password: '',
+						email: ''
+					}
+				})
+			)
+			.catch(err => Notification(errorMessage(err), 'red'))
 	},
 	getUserByLogin: (login: string) => {
 		AxiosInstance.post('/user/getByLogin', {

@@ -13,7 +13,7 @@ interface State {
 }
 
 interface Actions {
-	getTests: (user_id: number, offset?: number, limit?: number, token?: string) => void
+	getTests: (user_id: number, offset?: number, limit?: number) => void
 	deleteTest: (test_id: number) => void
 	changeActive: (test_id: number, is_active: boolean) => void
 	sortTests: (mode: string) => void
@@ -25,8 +25,8 @@ export const useTestManager = create<State & Actions>(set => ({
 	loading: true,
 	count: 0,
 
-	getTests: (user_id, offset, limit, token) => {
-		if (!token || user_id === 0) {
+	getTests: (user_id, offset, limit) => {
+		if (user_id === 0) {
 			set({ loading: false })
 			return
 		}

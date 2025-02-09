@@ -8,8 +8,6 @@ import { useUserStore } from '../stores/use-user-store'
 import { FaHome } from 'react-icons/fa'
 import { FiPlus } from 'react-icons/fi'
 import { IsAuthContent } from './components/auth-content'
-import { DontAuthContent } from './components/not-auth-content'
-import { useAccessToken } from '../hooks/use-access-token'
 import { ToggleTheme } from '../ui/toggle-theme'
 
 export const Header: FC = () => {
@@ -21,21 +19,15 @@ export const Header: FC = () => {
 	})
 	const iconColor = useMemo(() => (computedColorScheme === 'light' ? 'black' : 'white'), [computedColorScheme])
 
-	const { token } = useAccessToken()
 	const { getUserData } = useUserStore()
 
-	const content = useMemo(
-		() => (token ? pathname === '/profile' ? null : <IsAuthContent /> : <DontAuthContent />),
-		[pathname, token]
-	)
-	const isMainPage = useMemo(() => token && pathname !== '/profile', [token, pathname])
+	const isMainPage = useMemo(() => pathname !== '/profile', [pathname])
 
 	useEffect(() => {
-		if (token) getUserData(token)
-
+		getUserData()
 		setIsVisible(pathname !== '/auth')
 		setShowBackButton(pathname !== '/dashboard')
-	}, [pathname, getUserData, token])
+	}, [pathname, getUserData])
 
 	if (!isVisible) return null
 
@@ -63,7 +55,7 @@ export const Header: FC = () => {
 							</Link>
 						</>
 					)}
-					{content}
+					<IsAuthContent />
 				</Flex>
 			</Container>
 			<Divider />

@@ -7,7 +7,6 @@ import { Flex, Group, Select } from '@mantine/core'
 import Link from 'next/link'
 import { FC, useEffect, useMemo, useState } from 'react'
 import { CustomLoader } from '@/components/ui/custom-loader'
-import { useAccessToken } from '@/components/hooks/use-access-token'
 import { CustomTitle } from '@/components/ui/custom-title'
 import { useViewportSize } from '@mantine/hooks'
 
@@ -31,17 +30,16 @@ const Dashboard: FC = () => {
 	const [value, setValue] = useState<string | null>('')
 
 	const { user } = useUserStore()
-	const { token } = useAccessToken()
 	const { width } = useViewportSize()
 
 	const paddingSize = useMemo(() => (width <= 992 ? 0 : 50), [width])
 	const titleSize = useMemo(() => (width <= 992 ? 3 : 1), [width])
 
 	useEffect(() => {
-		if (user?.id && token) {
-			getTests(user.id, 0, 5, token)
+		if (user?.id) {
+			getTests(user.id, 0, 5)
 		}
-	}, [getTests, token, user?.id])
+	}, [getTests, user?.id])
 
 	useEffect(() => {
 		sortTests(value || '')

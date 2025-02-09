@@ -31,6 +31,11 @@ const UserPage: FC = () => {
 		})
 	}, [user])
 
+	const logoutHandler = useCallback(() => {
+		logout()
+		close()
+	}, [close, logout])
+
 	const handleUpdate = useCallback(() => {
 		if (updateData && updateData.name !== user.name) {
 			updateUserData(updateData, user.login)
@@ -88,7 +93,7 @@ const UserPage: FC = () => {
 					title='Вы действительно хотите выйти из аккаунта?'
 					centered
 				>
-					<CustomButton w='100%' onClick={logout}>
+					<CustomButton w='100%' onClick={logoutHandler}>
 						Да, я хочу выйти
 					</CustomButton>
 					<CustomButton w='100%' mt={10} variant='outline' onClick={close}>
