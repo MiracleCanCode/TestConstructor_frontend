@@ -55,7 +55,7 @@ export const Header: FC = () => {
 							</Link>
 						</>
 					)}
-					<IsAuthContent />
+					{isMainPage && <IsAuthContent />}
 				</Flex>
 			</Container>
 			<Divider />
