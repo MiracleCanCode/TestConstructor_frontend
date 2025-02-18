@@ -12,7 +12,7 @@ export const AuthorContentView: FC<{ test: Test }> = ({ test }) => {
 	const activeStatusBadgeVariant = useMemo(() => (isActive ? 'filled' : 'outline'), [isActive])
 
 	const changeTestActive = useCallback(() => {
-		changeActive(test.ID || 0, !isActive || false)
+		changeActive(test.ID!, !isActive || false)
 		setIsActive(!isActive)
 	}, [changeActive, isActive, test.ID])
 	return (

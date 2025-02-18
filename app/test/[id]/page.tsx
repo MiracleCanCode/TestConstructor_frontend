@@ -12,7 +12,7 @@ const TestPage: FC = () => {
 
 	useEffect(() => {
 		getTestById(Number(id))
-	}, [getTestById, id])
+	}, [id])
 
 	if (loading && !test) {
 		return <CustomLoader />
